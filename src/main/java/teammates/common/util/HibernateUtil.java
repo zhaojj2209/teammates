@@ -18,11 +18,11 @@ public final class HibernateUtil {
                 Configuration cfg = new Configuration()
                         .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
                         .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                        .setProperty("hibernate.connection.username", "jingjing")
-                        .setProperty("hibernate.connection.password", "password")
+                        .setProperty("hibernate.connection.username", "teammates")
+                        .setProperty("hibernate.connection.password", "teammates")
                         .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/teammates")
                         .setProperty("show_sql", "true")
-                        .setProperty("hbm2ddl.auto", "update")
+                        .setProperty("hibernate.hbm2ddl.auto", "create")
                         .addPackage("teammates.storage.persistence")
                         .addAnnotatedClass(Course.class);
 
