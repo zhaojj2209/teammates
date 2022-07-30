@@ -10,28 +10,27 @@ import teammates.storage.persistence.Course;
  */
 public final class HibernateUtil {
 
-    private static SessionFactory sessionFactory = buildSessionFactory();
+    private static SessionFactory sessionFactory;
 
-    private static SessionFactory buildSessionFactory() {
-        try {
-            if (sessionFactory == null) {
-                Configuration cfg = new Configuration()
-                        .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
-                        .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                        .setProperty("hibernate.connection.username", "teammates")
-                        .setProperty("hibernate.connection.password", "teammates")
-                        .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/teammates")
-                        .setProperty("show_sql", "true")
-                        .setProperty("hibernate.hbm2ddl.auto", "create")
-                        .addPackage("teammates.storage.persistence")
-                        .addAnnotatedClass(Course.class);
+    static {
+        Configuration cfg = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
+                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
+                .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
+                .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
+                .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:"
+                        + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB)
+                .setProperty("show_sql", "true")
+                .setProperty("hibernate.hbm2ddl.auto", "create")
+                .addPackage("teammates.storage.persistence")
+                .addAnnotatedClass(Course.class);
 
-                sessionFactory = cfg.buildSessionFactory();
-            }
-            return sessionFactory;
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
+        sessionFactory = cfg.buildSessionFactory();
+    }
+
+    private HibernateUtil() {
+        // Utility class
+        // Intentional private constructor to prevent instantiation.
     }
 
     public static SessionFactory getSessionFactory() {
