@@ -12,8 +12,8 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
+import teammates.common.util.HibernateUtil;
 import teammates.storage.persistence.Course;
-import teammates.storage.persistence.SessionFactoryBuilder;
 import teammates.ui.output.CourseData;
 import teammates.ui.request.CourseCreateRequest;
 import teammates.ui.request.InvalidHttpRequestBodyException;
@@ -86,7 +86,7 @@ class CreateCourseAction extends Action {
         }
 
         try {
-            Session session = SessionFactoryBuilder.getSessionFactory().openSession();
+            Session session = HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
 
             Course course = new Course(courseAttributes.getId(), courseAttributes.getName(),
@@ -94,7 +94,7 @@ class CreateCourseAction extends Action {
                     courseAttributes.getCreatedAt(), courseAttributes.getDeletedAt());
             session.persist(course);
             session.getTransaction().commit();
-            SessionFactoryBuilder.shutdown();
+            HibernateUtil.shutdown();
 
         } catch (HibernateException e) {
             throw new RuntimeException(e);
