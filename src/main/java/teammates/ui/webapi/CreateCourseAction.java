@@ -3,17 +3,12 @@ package teammates.ui.webapi;
 import java.util.List;
 import java.util.Objects;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-
 import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
-import teammates.storage.persistence.Course;
-import teammates.storage.persistence.SessionFactoryBuilder;
 import teammates.ui.output.CourseData;
 import teammates.ui.request.CourseCreateRequest;
 import teammates.ui.request.InvalidHttpRequestBodyException;
@@ -83,21 +78,6 @@ class CreateCourseAction extends Action {
                     + " Please try again with a different course ID.", e);
         } catch (InvalidParametersException e) {
             throw new InvalidHttpRequestBodyException(e);
-        }
-
-        try {
-            Session session = SessionFactoryBuilder.getSessionFactory().openSession();
-            session.beginTransaction();
-
-            Course course = new Course(courseAttributes.getId(), courseAttributes.getName(),
-                    courseAttributes.getTimeZone(), courseAttributes.getInstitute(),
-                    courseAttributes.getCreatedAt(), courseAttributes.getDeletedAt());
-            session.persist(course);
-            session.getTransaction().commit();
-            SessionFactoryBuilder.shutdown();
-
-        } catch (HibernateException e) {
-            throw new RuntimeException(e);
         }
 
         return new JsonResult(new CourseData(logic.getCourse(newCourseId)));
