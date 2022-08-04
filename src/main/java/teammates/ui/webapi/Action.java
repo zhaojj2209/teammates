@@ -21,6 +21,7 @@ import teammates.logic.api.EmailGenerator;
 import teammates.logic.api.EmailSender;
 import teammates.logic.api.FileStorage;
 import teammates.logic.api.Logic;
+import teammates.logic.api.LogicNew;
 import teammates.logic.api.LogsProcessor;
 import teammates.logic.api.RecaptchaVerifier;
 import teammates.logic.api.TaskQueuer;
@@ -36,6 +37,7 @@ import teammates.ui.request.InvalidHttpRequestBodyException;
 public abstract class Action {
 
     Logic logic = Logic.inst();
+    LogicNew logicNew = LogicNew.inst();
     UserProvision userProvision = UserProvision.inst();
     GateKeeper gateKeeper = GateKeeper.inst();
     EmailGenerator emailGenerator = EmailGenerator.inst();

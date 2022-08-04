@@ -1,4 +1,4 @@
-package teammates.storage.persistence;
+package teammates.storage.sqlentity;
 
 import java.time.Instant;
 
@@ -15,7 +15,7 @@ import jakarta.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "courses", uniqueConstraints = { @UniqueConstraint(columnNames = "id") })
-public class Course {
+public class Course extends BaseEntity {
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
