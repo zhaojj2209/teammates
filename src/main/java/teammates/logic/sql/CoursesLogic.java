@@ -37,5 +37,12 @@ public final class CoursesLogic {
         return coursesDb.createEntity(courseToCreate);
     }
 
+    /**
+     * Gets the course with the specified ID.
+     */
+    public CourseAttributes getCourse(String courseId) {
+        return coursesDb.getCourse(courseId);
+    }
+
 }
 

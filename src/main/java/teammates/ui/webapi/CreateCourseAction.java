@@ -67,6 +67,7 @@ class CreateCourseAction extends Action {
                         .build();
 
         try {
+            // TODO: Replace with createCourseAndInstructor
             logicNew.createCourse(courseAttributes);
 
         } catch (EntityAlreadyExistsException e) {

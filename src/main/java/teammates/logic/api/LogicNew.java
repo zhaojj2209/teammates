@@ -37,4 +37,16 @@ public class LogicNew {
         coursesLogic.createCourse(courseAttributes);
     }
 
+    /**
+     * Preconditions: <br>
+     * * All parameters are non-null.
+     * @return null if not found.
+     */
+    public CourseAttributes getCourse(String courseId) {
+
+        assert courseId != null;
+
+        return coursesLogic.getCourse(courseId);
+    }
+
 }

@@ -26,10 +26,17 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
 
     @Override
     boolean hasExistingEntities(CourseAttributes entityToCreate) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Course course = session.get(Course.class, entityToCreate.getId());
-        session.close();
+        Course course = getCourseEntity(entityToCreate.getId());
         return course != null;
+    }
+
+    /**
+     * Gets a course.
+     */
+    public CourseAttributes getCourse(String courseId) {
+        assert courseId != null;
+
+        return makeAttributesOrNull(getCourseEntity(courseId));
     }
 
     @Override
@@ -37,6 +44,13 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
         assert entity != null;
 
         return CourseAttributes.valueOf(entity);
+    }
+
+    private Course getCourseEntity(String courseId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Course course = session.get(Course.class, courseId);
+        session.close();
+        return course;
     }
 
 }
