@@ -9,7 +9,7 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
-import teammates.ui.output.SqlCourseData;
+import teammates.ui.output.CourseData;
 import teammates.ui.request.CourseCreateRequest;
 import teammates.ui.request.InvalidHttpRequestBodyException;
 
@@ -78,6 +78,6 @@ class CreateCourseAction extends Action {
             throw new InvalidHttpRequestBodyException(e);
         }
 
-        return new JsonResult(new SqlCourseData(courseAttributes));
+        return new JsonResult(new CourseData(courseAttributes));
     }
 }

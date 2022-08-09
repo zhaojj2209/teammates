@@ -5,7 +5,6 @@ import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.util.Const;
 import teammates.ui.output.CourseData;
-import teammates.ui.output.SqlCourseData;
 
 /**
  * Get a course for an instructor or student.
@@ -47,7 +46,7 @@ class GetCourseAction extends Action {
         // If course is found in SQL database, return said course instead
         teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes = logicNew.getCourse(courseId);
         if (sqlCourseAttributes != null) {
-            SqlCourseData output = new SqlCourseData(sqlCourseAttributes);
+            CourseData output = new CourseData(sqlCourseAttributes);
             String entityType = getRequestParamValue(Const.ParamsNames.ENTITY_TYPE);
             if (Const.EntityType.INSTRUCTOR.equals(entityType)) {
                 InstructorAttributes instructor = getPossiblyUnregisteredInstructor(courseId);
