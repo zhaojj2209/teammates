@@ -3,8 +3,8 @@ package teammates.ui.webapi;
 import java.util.List;
 import java.util.Objects;
 
-import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
+import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
@@ -67,11 +67,9 @@ class CreateCourseAction extends Action {
                         .build();
 
         try {
-            logic.createCourseAndInstructor(userInfo.getId(), courseAttributes);
+            // TODO: Replace with createCourseAndInstructor
+            logicNew.createCourse(courseAttributes);
 
-            InstructorAttributes instructorCreatedForCourse = logic.getInstructorForGoogleId(newCourseId, userInfo.getId());
-            taskQueuer.scheduleInstructorForSearchIndexing(instructorCreatedForCourse.getCourseId(),
-                    instructorCreatedForCourse.getEmail());
         } catch (EntityAlreadyExistsException e) {
             throw new InvalidOperationException("The course ID " + courseAttributes.getId()
                     + " has been used by another course, possibly by some other user."
@@ -80,6 +78,6 @@ class CreateCourseAction extends Action {
             throw new InvalidHttpRequestBodyException(e);
         }
 
-        return new JsonResult(new CourseData(logic.getCourse(newCourseId)));
+        return new JsonResult(new CourseData(courseAttributes));
     }
 }

@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-
 import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.InstructorPrivileges;
 import teammates.common.datatransfer.attributes.AccountAttributes;
@@ -20,10 +17,8 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
-import teammates.common.util.HibernateUtil;
 import teammates.common.util.Logger;
 import teammates.storage.api.CoursesDb;
-import teammates.storage.persistence.Course;
 
 /**
  * Handles operations related to courses.
@@ -109,20 +104,6 @@ public final class CoursesLogic {
         assert courseCreator != null : "Trying to create a course for a non-existent instructor :" + instructorGoogleId;
 
         CourseAttributes createdCourse = createCourse(courseToCreate);
-
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-
-            Course course = new Course(createdCourse.getId(), createdCourse.getName(),
-                    createdCourse.getTimeZone(), createdCourse.getInstitute(),
-                    createdCourse.getCreatedAt(), createdCourse.getDeletedAt());
-            session.persist(course);
-            session.getTransaction().commit();
-            HibernateUtil.shutdown();
-        } catch (HibernateException e) {
-            // TODO: Handle errors
-        }
 
         // Create the initial instructor for the course
         InstructorPrivileges privileges = new InstructorPrivileges(

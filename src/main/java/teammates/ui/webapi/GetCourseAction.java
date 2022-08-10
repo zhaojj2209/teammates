@@ -42,6 +42,24 @@ class GetCourseAction extends Action {
     @Override
     public JsonResult execute() {
         String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
+
+        // If course is found in SQL database, return said course instead
+        teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes = logicNew.getCourse(courseId);
+        if (sqlCourseAttributes != null) {
+            CourseData output = new CourseData(sqlCourseAttributes);
+            String entityType = getRequestParamValue(Const.ParamsNames.ENTITY_TYPE);
+            if (Const.EntityType.INSTRUCTOR.equals(entityType)) {
+                InstructorAttributes instructor = getPossiblyUnregisteredInstructor(courseId);
+                if (instructor != null) {
+                    InstructorPermissionSet privilege = constructInstructorPrivileges(instructor, null);
+                    output.setPrivileges(privilege);
+                }
+            } else if (Const.EntityType.STUDENT.equals(entityType)) {
+                output.hideInformationForStudent();
+            }
+            return new JsonResult(output);
+        }
+
         CourseAttributes courseAttributes = logic.getCourse(courseId);
         if (courseAttributes == null) {
             throw new EntityNotFoundException("No course with id: " + courseId);
