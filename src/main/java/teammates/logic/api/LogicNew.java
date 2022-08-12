@@ -69,4 +69,17 @@ public class LogicNew {
         return coursesLogic.updateCourseCascade(updateOptions);
     }
 
+    /**
+     * Deletes a course cascade its students, instructors, sessions, responses, deadline extensions and comments.
+     *
+     * <p>Fails silently if no such course.
+     *
+     * <br/>Preconditions: <br/>
+     * * All parameters are non-null.
+     */
+    public void deleteCourseCascade(String courseId) {
+        assert courseId != null;
+        coursesLogic.deleteCourseCascade(courseId);
+    }
+
 }

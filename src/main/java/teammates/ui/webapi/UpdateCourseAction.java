@@ -44,19 +44,25 @@ class UpdateCourseAction extends Action {
 
         String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
         String courseName = courseUpdateRequest.getCourseName();
-        teammates.common.datatransfer.sqlattributes.CourseAttributes updatedCourse;
+        CourseAttributes updatedCourse;
 
         try {
-            logic.updateCourseCascade(
+            updatedCourse = logic.updateCourseCascade(
                     CourseAttributes.updateOptionsBuilder(courseId)
                             .withName(courseName)
                             .withTimezone(courseTimeZone)
                             .build());
-            updatedCourse = logicNew.updateCourseCascade(
-                    teammates.common.datatransfer.sqlattributes.CourseAttributes.updateOptionsBuilder(courseId)
-                            .withName(courseName)
-                            .withTimezone(courseTimeZone)
-                            .build());
+
+            // If course is found in SQL database, update said course as well
+            teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes
+                    = logicNew.getCourse(courseId);
+            if (sqlCourseAttributes != null) {
+                logicNew.updateCourseCascade(
+                        teammates.common.datatransfer.sqlattributes.CourseAttributes.updateOptionsBuilder(courseId)
+                                .withName(courseName)
+                                .withTimezone(courseTimeZone)
+                                .build());
+            }
         } catch (InvalidParametersException ipe) {
             throw new InvalidHttpRequestBodyException(ipe);
         } catch (EntityDoesNotExistException edee) {

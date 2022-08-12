@@ -85,6 +85,17 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
         return makeAttributes(course);
     }
 
+    /**
+     * Deletes a course.
+     */
+    public void deleteCourse(String courseId) {
+        assert courseId != null;
+
+        Course course = getCourseEntity(courseId);
+
+        deleteEntity(course);
+    }
+
     @Override
     CourseAttributes makeAttributes(Course entity) {
         assert entity != null;

@@ -66,5 +66,19 @@ public final class CoursesLogic {
         return updatedCourse;
     }
 
+    /**
+     * Deletes a course cascade its students, instructors, sessions, responses, deadline extensions and comments.
+     *
+     * <p>Fails silently if no such course.
+     */
+    public void deleteCourseCascade(String courseId) {
+        if (getCourse(courseId) == null) {
+            return;
+        }
+
+        // TODO: Handle cascading
+        coursesDb.deleteCourse(courseId);
+    }
+
 }
 
