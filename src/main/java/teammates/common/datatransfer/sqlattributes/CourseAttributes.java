@@ -32,7 +32,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         this.id = courseId;
         this.timeZone = Const.DEFAULT_TIME_ZONE;
         this.institute = Const.UNKNOWN_INSTITUTION;
-        this.createdAt = Instant.now();
+        this.createdAt = null;
         this.deletedAt = null;
     }
 
@@ -56,9 +56,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         courseAttributes.timeZone = courseTimeZone;
         courseAttributes.institute = course.getInstitute();
 
-        if (course.getCreatedAt() != null) {
-            courseAttributes.createdAt = course.getCreatedAt();
-        }
+        courseAttributes.createdAt = course.getCreatedAt();
         courseAttributes.deletedAt = course.getDeletedAt();
 
         return courseAttributes;
@@ -131,7 +129,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
 
     @Override
     public Course toEntity() {
-        return new Course(getId(), getName(), getTimeZone(), getInstitute(), createdAt, deletedAt);
+        return new Course(getId(), getName(), getTimeZone(), getInstitute(), deletedAt);
     }
 
     @Override
