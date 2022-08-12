@@ -95,6 +95,32 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
     abstract boolean hasExistingEntities(A entityToCreate);
 
     /**
+     * Checks whether two values are the same.
+     */
+    <T> boolean hasSameValue(T oldValue, T newValue) {
+        return oldValue.equals(newValue);
+    }
+
+    /**
+     * Saves an entity.
+     */
+    void saveEntity(E entityToSave) {
+        assert entityToSave != null;
+
+        Transaction tx = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.merge(entityToSave);
+            tx.commit();
+            log.info("Entity saved: " + JsonUtils.toJson(entityToSave));
+        } catch (HibernateException e) {
+            // TODO: Handle errors
+            tx.rollback();
+        }
+    }
+
+    /**
      * Converts from entity to attributes.
      */
     abstract A makeAttributes(E entity);

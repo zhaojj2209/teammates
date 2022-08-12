@@ -2,6 +2,7 @@ package teammates.logic.api;
 
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
+import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.logic.sql.CoursesLogic;
 
@@ -47,6 +48,25 @@ public class LogicNew {
         assert courseId != null;
 
         return coursesLogic.getCourse(courseId);
+    }
+
+    /**
+     * Updates a course by {@link CourseAttributes.UpdateOptions}.
+     *
+     * <p>If the {@code timezone} of the course is changed, cascade the change to its corresponding feedback sessions.
+     *
+     * <br/>Preconditions: <br/>
+     * * All parameters are non-null.
+     *
+     * @return updated course
+     * @throws InvalidParametersException if attributes to update are not valid
+     * @throws EntityDoesNotExistException if the course cannot be found
+     */
+    public CourseAttributes updateCourseCascade(CourseAttributes.UpdateOptions updateOptions)
+            throws InvalidParametersException, EntityDoesNotExistException {
+        assert updateOptions != null;
+
+        return coursesLogic.updateCourseCascade(updateOptions);
     }
 
 }

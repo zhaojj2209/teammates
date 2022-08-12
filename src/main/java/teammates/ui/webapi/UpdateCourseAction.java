@@ -44,11 +44,16 @@ class UpdateCourseAction extends Action {
 
         String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
         String courseName = courseUpdateRequest.getCourseName();
-        CourseAttributes updatedCourse;
+        teammates.common.datatransfer.sqlattributes.CourseAttributes updatedCourse;
 
         try {
-            updatedCourse = logic.updateCourseCascade(
+            logic.updateCourseCascade(
                     CourseAttributes.updateOptionsBuilder(courseId)
+                            .withName(courseName)
+                            .withTimezone(courseTimeZone)
+                            .build());
+            updatedCourse = logicNew.updateCourseCascade(
+                    teammates.common.datatransfer.sqlattributes.CourseAttributes.updateOptionsBuilder(courseId)
                             .withName(courseName)
                             .withTimezone(courseTimeZone)
                             .build());

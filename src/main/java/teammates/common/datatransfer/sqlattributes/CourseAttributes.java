@@ -189,10 +189,10 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
     }
 
     /**
-     * Returns a {@link Builder} to build {@link UpdateOptions} for a course.
+     * Returns a {@link UpdateOptions.Builder} to build {@link UpdateOptions} for a course.
      */
-    public static Builder updateOptionsBuilder(String courseId) {
-        return new Builder(courseId);
+    public static UpdateOptions.Builder updateOptionsBuilder(String courseId) {
+        return new UpdateOptions.Builder(courseId);
     }
 
     /**
