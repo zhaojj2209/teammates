@@ -1,5 +1,7 @@
 package teammates.storage.sql;
 
+import java.time.Instant;
+
 import org.hibernate.Session;
 
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
@@ -94,6 +96,39 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
         Course course = getCourseEntity(courseId);
 
         deleteEntity(course);
+    }
+
+    /**
+     * Soft-deletes a course by its given corresponding ID.
+     * @return Soft-deletion time of the course.
+     */
+    public Instant softDeleteCourse(String courseId) throws EntityDoesNotExistException {
+        assert courseId != null;
+        Course courseEntity = getCourseEntity(courseId);
+
+        if (courseEntity == null) {
+            throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT);
+        }
+
+        courseEntity.setDeletedAt(Instant.now());
+        saveEntity(courseEntity);
+
+        return courseEntity.getDeletedAt();
+    }
+
+    /**
+     * Restores a soft-deleted course by its given corresponding ID.
+     */
+    public void restoreDeletedCourse(String courseId) throws EntityDoesNotExistException {
+        assert courseId != null;
+        Course courseEntity = getCourseEntity(courseId);
+
+        if (courseEntity == null) {
+            throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT);
+        }
+
+        courseEntity.setDeletedAt(null);
+        saveEntity(courseEntity);
     }
 
     @Override

@@ -29,6 +29,7 @@ public class CourseData extends ApiOutput {
             this.deletionTimestamp = courseAttributes.getDeletedAt().toEpochMilli();
         }
     }
+
     public CourseData(teammates.common.datatransfer.sqlattributes.CourseAttributes courseAttributes) {
         this.courseId = courseAttributes.getId();
         this.courseName = courseAttributes.getName();

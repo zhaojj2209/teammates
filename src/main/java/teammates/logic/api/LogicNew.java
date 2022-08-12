@@ -1,5 +1,7 @@
 package teammates.logic.api;
 
+import java.time.Instant;
+
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
@@ -80,6 +82,32 @@ public class LogicNew {
     public void deleteCourseCascade(String courseId) {
         assert courseId != null;
         coursesLogic.deleteCourseCascade(courseId);
+    }
+
+    /**
+     * Moves a course to Recycle Bin by its given corresponding ID.
+     *
+     * <br/>Preconditions: <br/>
+     * * All parameters are non-null.
+     *
+     * @return the deletion timestamp assigned to the course.
+     */
+    public Instant moveCourseToRecycleBin(String courseId) throws EntityDoesNotExistException {
+        assert courseId != null;
+        return coursesLogic.moveCourseToRecycleBin(courseId);
+    }
+
+    /**
+     * Restores a course and all data related to the course from Recycle Bin by
+     * its given corresponding ID.
+     *
+     * <br/>Preconditions: <br/>
+     * * All parameters are non-null.
+     */
+    public void restoreCourseFromRecycleBin(String courseId) throws EntityDoesNotExistException {
+        assert courseId != null;
+
+        coursesLogic.restoreCourseFromRecycleBin(courseId);
     }
 
 }

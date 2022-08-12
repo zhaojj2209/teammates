@@ -1,5 +1,7 @@
 package teammates.logic.sql;
 
+import java.time.Instant;
+
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
@@ -78,6 +80,21 @@ public final class CoursesLogic {
 
         // TODO: Handle cascading
         coursesDb.deleteCourse(courseId);
+    }
+
+    /**
+     * Moves a course to Recycle Bin by its given corresponding ID.
+     * @return the time when the course is moved to the recycle bin
+     */
+    public Instant moveCourseToRecycleBin(String courseId) throws EntityDoesNotExistException {
+        return coursesDb.softDeleteCourse(courseId);
+    }
+
+    /**
+     * Restores a course from Recycle Bin by its given corresponding ID.
+     */
+    public void restoreCourseFromRecycleBin(String courseId) throws EntityDoesNotExistException {
+        coursesDb.restoreDeletedCourse(courseId);
     }
 
 }

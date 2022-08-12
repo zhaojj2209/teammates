@@ -54,9 +54,7 @@ class UpdateCourseAction extends Action {
                             .build());
 
             // If course is found in SQL database, update said course as well
-            teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes
-                    = logicNew.getCourse(courseId);
-            if (sqlCourseAttributes != null) {
+            if (logicNew.getCourse(courseId) != null) {
                 logicNew.updateCourseCascade(
                         teammates.common.datatransfer.sqlattributes.CourseAttributes.updateOptionsBuilder(courseId)
                                 .withName(courseName)

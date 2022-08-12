@@ -33,6 +33,11 @@ class BinCourseAction extends Action {
             CourseAttributes courseAttributes = logic.getCourse(idOfCourseToBin);
             courseAttributes.setDeletedAt(logic.moveCourseToRecycleBin(idOfCourseToBin));
 
+            // If course is found in SQL database, bin said course as well
+            if (logicNew.getCourse(idOfCourseToBin) != null) {
+                logicNew.moveCourseToRecycleBin(idOfCourseToBin);
+            }
+
             return new JsonResult(new CourseData(courseAttributes));
         } catch (EntityDoesNotExistException e) {
             throw new EntityNotFoundException(e);
