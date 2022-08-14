@@ -1,9 +1,5 @@
 package teammates.storage.sql;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,7 +21,7 @@ import teammates.storage.sqlentity.BaseEntity;
 abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
 
     /**
-     * Error message when trying to create entity that already exist.
+     * Error message when trying to create entity that already exists.
      */
     static final String ERROR_CREATE_ENTITY_ALREADY_EXISTS = "Trying to create an entity that exists: %s";
 
@@ -64,7 +60,7 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
         }
 
         if (shouldCheckExistence && hasExistingEntities(entityToAdd)) {
-            String error = String.format(ERROR_CREATE_ENTITY_ALREADY_EXISTS, entityToAdd.toString());
+            String error = String.format(ERROR_CREATE_ENTITY_ALREADY_EXISTS, entityToAdd);
             throw new EntityAlreadyExistsException(error);
         }
 
@@ -95,20 +91,53 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
     abstract boolean hasExistingEntities(A entityToCreate);
 
     /**
+     * Checks whether two values are the same.
+     */
+    <T> boolean hasSameValue(T oldValue, T newValue) {
+        return oldValue.equals(newValue);
+    }
+
+    /**
+     * Saves an entity.
+     */
+    void saveEntity(E entityToSave) {
+        assert entityToSave != null;
+
+        Transaction tx = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.merge(entityToSave);
+            tx.commit();
+            log.info("Entity saved: " + JsonUtils.toJson(entityToSave));
+        } catch (HibernateException e) {
+            // TODO: Handle errors
+            tx.rollback();
+        }
+    }
+
+    /**
+     * Deletes an entity.
+     */
+    void deleteEntity(E entityToDelete) {
+        assert entityToDelete != null;
+
+        Transaction tx = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.remove(entityToDelete);
+            tx.commit();
+        } catch (HibernateException e) {
+            // TODO: Handle errors
+            tx.rollback();
+        }
+    }
+
+    /**
      * Converts from entity to attributes.
      */
     abstract A makeAttributes(E entity);
-
-    /**
-     * Converts a collection of entities to a list of attributes.
-     */
-    List<A> makeAttributes(Collection<E> entities) {
-        List<A> attributes = new LinkedList<>();
-        for (E entity : entities) {
-            attributes.add(makeAttributes(entity));
-        }
-        return attributes;
-    }
 
     /**
      * Converts from entity to attributes.

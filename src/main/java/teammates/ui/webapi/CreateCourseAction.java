@@ -3,8 +3,8 @@ package teammates.ui.webapi;
 import java.util.List;
 import java.util.Objects;
 
+import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
-import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
@@ -66,9 +66,22 @@ class CreateCourseAction extends Action {
                         .withInstitute(institute)
                         .build();
 
+        teammates.common.datatransfer.sqlattributes.CourseAttributes newCourseAttributes =
+                teammates.common.datatransfer.sqlattributes.CourseAttributes.builder(newCourseId)
+                        .withName(newCourseName)
+                        .withTimezone(newCourseTimeZone)
+                        .withInstitute(institute)
+                        .build();
+
         try {
+            logic.createCourseAndInstructor(userInfo.getId(), courseAttributes);
+
+            InstructorAttributes instructorCreatedForCourse = logic.getInstructorForGoogleId(newCourseId, userInfo.getId());
+            taskQueuer.scheduleInstructorForSearchIndexing(instructorCreatedForCourse.getCourseId(),
+                    instructorCreatedForCourse.getEmail());
+
             // TODO: Replace with createCourseAndInstructor
-            logicNew.createCourse(courseAttributes);
+            logicNew.createCourse(newCourseAttributes);
 
         } catch (EntityAlreadyExistsException e) {
             throw new InvalidOperationException("The course ID " + courseAttributes.getId()
@@ -78,6 +91,6 @@ class CreateCourseAction extends Action {
             throw new InvalidHttpRequestBodyException(e);
         }
 
-        return new JsonResult(new CourseData(courseAttributes));
+        return new JsonResult(new CourseData(logicNew.getCourse(newCourseId)));
     }
 }

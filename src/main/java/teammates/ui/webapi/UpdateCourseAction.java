@@ -52,6 +52,15 @@ class UpdateCourseAction extends Action {
                             .withName(courseName)
                             .withTimezone(courseTimeZone)
                             .build());
+
+            // If course is found in SQL database, update said course as well
+            if (logicNew.getCourse(courseId) != null) {
+                logicNew.updateCourseCascade(
+                        teammates.common.datatransfer.sqlattributes.CourseAttributes.updateOptionsBuilder(courseId)
+                                .withName(courseName)
+                                .withTimezone(courseTimeZone)
+                                .build());
+            }
         } catch (InvalidParametersException ipe) {
             throw new InvalidHttpRequestBodyException(ipe);
         } catch (EntityDoesNotExistException edee) {

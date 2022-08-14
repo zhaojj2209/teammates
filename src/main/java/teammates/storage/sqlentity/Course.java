@@ -2,19 +2,19 @@ package teammates.storage.sqlentity;
 
 import java.time.Instant;
 
-import teammates.common.util.Const;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 /**
  * Represents a course entity.
  */
 @Entity
-@Table(name = "courses", uniqueConstraints = { @UniqueConstraint(columnNames = "id") })
+@Table(name = "courses")
 public class Course extends BaseEntity {
 
     @Id
@@ -30,9 +30,11 @@ public class Course extends BaseEntity {
     @Column(name = "institute", nullable = false)
     private String institute;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
@@ -43,23 +45,14 @@ public class Course extends BaseEntity {
         // recommended by Hibernate
     }
 
-    public Course(String courseId, String courseName, String courseTimeZone, String institute,
-            Instant createdAt, Instant deletedAt) {
+    public Course(String courseId, String courseName, String courseTimeZone, String institute, Instant deletedAt) {
         this.setUniqueId(courseId);
         this.setName(courseName);
-        if (courseTimeZone == null) {
-            this.setTimeZone(Const.DEFAULT_TIME_ZONE);
-        } else {
-            this.setTimeZone(courseTimeZone);
-        }
+        this.setTimeZone(courseTimeZone);
         this.setInstitute(institute);
-        if (createdAt == null) {
-            this.setCreatedAt(Instant.now());
-        } else {
-            this.setCreatedAt(createdAt);
+        if (deletedAt != null) {
+            this.setDeletedAt(deletedAt);
         }
-        this.setUpdatedAt(this.createdAt);
-        this.setDeletedAt(deletedAt);
     }
 
     public String getUniqueId() {

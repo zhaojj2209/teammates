@@ -29,6 +29,7 @@ class DeleteCourseAction extends Action {
         String idOfCourseToDelete = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
 
         logic.deleteCourseCascade(idOfCourseToDelete);
+        logicNew.deleteCourseCascade(idOfCourseToDelete);
 
         return new JsonResult(new MessageOutput("OK"));
     }
