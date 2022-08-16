@@ -37,6 +37,18 @@ public class InstructorData extends ApiOutput {
         this.joinState = instructorAttributes.isRegistered() ? JoinState.JOINED : JoinState.NOT_JOINED;
     }
 
+    public InstructorData(teammates.common.datatransfer.sqlattributes.InstructorAttributes instructorAttributes) {
+        this.courseId = instructorAttributes.getCourseId();
+        this.email = instructorAttributes.getEmail();
+        this.role = instructorAttributes.getRole() == null ? null
+                : InstructorPermissionRole.getEnum(instructorAttributes.getRole());
+        this.isDisplayedToStudents = instructorAttributes.isDisplayedToStudents();
+        this.displayedToStudentsAs = instructorAttributes.getDisplayedName();
+        this.name = instructorAttributes.getName();
+
+        this.joinState = instructorAttributes.isRegistered() ? JoinState.JOINED : JoinState.NOT_JOINED;
+    }
+
     public String getGoogleId() {
         return googleId;
     }
