@@ -2,10 +2,15 @@ package teammates.logic.sql;
 
 import java.time.Instant;
 
+import teammates.common.datatransfer.InstructorPrivileges;
+import teammates.common.datatransfer.attributes.AccountAttributes;
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
+import teammates.common.datatransfer.sqlattributes.InstructorAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
+import teammates.common.util.Const;
+import teammates.logic.core.AccountsLogic;
 import teammates.storage.sql.CoursesDb;
 
 /**
@@ -20,12 +25,21 @@ public final class CoursesLogic {
 
     private final CoursesDb coursesDb = CoursesDb.inst();
 
+    private AccountsLogic accountsLogic;
+
+    private InstructorsLogic instructorsLogic;
+
     private CoursesLogic() {
         // prevent initialization
     }
 
     public static CoursesLogic inst() {
         return instance;
+    }
+
+    void initLogicDependencies() {
+        accountsLogic = AccountsLogic.inst();
+        instructorsLogic = InstructorsLogic.inst();
     }
 
     /**
@@ -38,6 +52,41 @@ public final class CoursesLogic {
     public CourseAttributes createCourse(CourseAttributes courseToCreate)
             throws InvalidParametersException, EntityAlreadyExistsException {
         return coursesDb.createEntity(courseToCreate);
+    }
+
+    /**
+     * Creates a course and an associated instructor for the course.
+     *
+     * <br/>Preconditions: <br/>
+     * * {@code instructorAccountId} already has an account and instructor privileges.
+     */
+    public void createCourseAndInstructor(String instructorAccountId, CourseAttributes courseToCreate)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+
+        AccountAttributes courseCreator = accountsLogic.getAccount(instructorAccountId);
+        assert courseCreator != null : "Trying to create a course for a non-existent instructor :" + instructorAccountId;
+
+        CourseAttributes createdCourse = createCourse(courseToCreate);
+
+        // Create the initial instructor for the course
+        InstructorPrivileges privileges = new InstructorPrivileges(
+                Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER);
+        InstructorAttributes instructor = InstructorAttributes
+                .builder(createdCourse.getId(), courseCreator.getEmail())
+                .withName(courseCreator.getName())
+                .withAccountId(instructorAccountId)
+                .withPrivileges(privileges)
+                .build();
+
+        try {
+            instructorsLogic.createInstructor(instructor);
+        } catch (EntityAlreadyExistsException | InvalidParametersException e) {
+            // roll back the transaction
+            coursesDb.deleteCourse(createdCourse.getId());
+            String errorMessage = "Unexpected exception while trying to create instructor for a new course "
+                    + System.lineSeparator() + instructor.toString();
+            assert false : errorMessage;
+        }
     }
 
     /**

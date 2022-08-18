@@ -28,16 +28,18 @@ public class LogicNew {
     }
 
     /**
-     * Creates a course.
+     * Creates a course and an associated instructor for the course.
      *
      * <br/>Preconditions: <br/>
      * * All parameters are non-null. <br/>
+     * * {@code instructorAccountId} already has an account and instructor privileges.
      */
-    public void createCourse(CourseAttributes courseAttributes)
+    public void createCourseAndInstructor(String instructorAccountId, CourseAttributes courseAttributes)
             throws EntityAlreadyExistsException, InvalidParametersException {
+        assert instructorAccountId != null;
         assert courseAttributes != null;
 
-        coursesLogic.createCourse(courseAttributes);
+        coursesLogic.createCourseAndInstructor(instructorAccountId, courseAttributes);
     }
 
     /**

@@ -22,6 +22,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
     private static final Logger log = Logger.getLogger();
 
     private Instant createdAt;
+    private Instant updatedAt;
     private Instant deletedAt;
     private String name;
     private String timeZone;
@@ -33,6 +34,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         this.timeZone = Const.DEFAULT_TIME_ZONE;
         this.institute = Const.UNKNOWN_INSTITUTION;
         this.createdAt = null;
+        this.updatedAt = null;
         this.deletedAt = null;
     }
 
@@ -57,6 +59,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         courseAttributes.institute = course.getInstitute();
 
         courseAttributes.createdAt = course.getCreatedAt();
+        courseAttributes.updatedAt = course.getUpdatedAt();
         courseAttributes.deletedAt = course.getDeletedAt();
 
         return courseAttributes;
@@ -99,6 +102,14 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Instant getDeletedAt() {

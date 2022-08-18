@@ -66,7 +66,7 @@ class CreateCourseAction extends Action {
                         .withInstitute(institute)
                         .build();
 
-        teammates.common.datatransfer.sqlattributes.CourseAttributes newCourseAttributes =
+        teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes =
                 teammates.common.datatransfer.sqlattributes.CourseAttributes.builder(newCourseId)
                         .withName(newCourseName)
                         .withTimezone(newCourseTimeZone)
@@ -80,8 +80,7 @@ class CreateCourseAction extends Action {
             taskQueuer.scheduleInstructorForSearchIndexing(instructorCreatedForCourse.getCourseId(),
                     instructorCreatedForCourse.getEmail());
 
-            // TODO: Replace with createCourseAndInstructor
-            logicNew.createCourse(newCourseAttributes);
+            logicNew.createCourseAndInstructor(userInfo.getId(), sqlCourseAttributes);
 
         } catch (EntityAlreadyExistsException e) {
             throw new InvalidOperationException("The course ID " + courseAttributes.getId()

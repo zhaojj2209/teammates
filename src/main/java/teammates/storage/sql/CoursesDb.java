@@ -28,12 +28,6 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
         return instance;
     }
 
-    @Override
-    boolean hasExistingEntities(CourseAttributes entityToCreate) {
-        Course course = getCourseEntity(entityToCreate.getId());
-        return course != null;
-    }
-
     /**
      * Gets a course.
      */
@@ -129,6 +123,12 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
 
         courseEntity.setDeletedAt(null);
         saveEntity(courseEntity);
+    }
+
+    @Override
+    boolean hasExistingEntities(CourseAttributes entityToCreate) {
+        Course course = getCourseEntity(entityToCreate.getId());
+        return course != null;
     }
 
     @Override
