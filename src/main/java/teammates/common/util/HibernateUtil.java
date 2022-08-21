@@ -22,7 +22,6 @@ public final class HibernateUtil {
                 .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:"
                         + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB)
                 .setProperty("show_sql", "true")
-                .setProperty("hibernate.hbm2ddl.auto", "create")
                 .addPackage("teammates.storage.sqlentity")
                 .addAnnotatedClass(Course.class)
                 .addAnnotatedClass(Instructor.class);
