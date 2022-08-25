@@ -3,16 +3,14 @@ package teammates.storage.sqlentity;
 import java.security.SecureRandom;
 import java.time.Instant;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import teammates.common.util.StringHelper;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import teammates.common.util.StringHelper;
 
 
 /**
@@ -20,9 +18,7 @@ import jakarta.persistence.UniqueConstraint;
  * --> [is an instructor for] --> Course.
  */
 @Entity
-@Table(name = "instructors", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "account_id", "course_id" })
-})
+@Table(name = "instructors", schema = "core")
 public class Instructor extends BaseEntity {
 
     /**
@@ -31,53 +27,52 @@ public class Instructor extends BaseEntity {
      * @see #generateId(String, String)
      */
     @Id
-    @Column(name = "id", unique = true, nullable = false)
     private String id;
 
     /**
      * The account id of the instructor, used as the foreign key to locate the Account object.
      */
-    @Column(name = "account_id", nullable = false)
+    @Column(name = "account_id")
     private String accountId;
 
     /** The foreign key to locate the Course object. */
-    @Column(name = "course_id", nullable = false)
+    @Column(name = "course_id")
     private String courseId;
 
     /** Whether the associated course is archived. */
-    @Column(name = "is_archived", nullable = false)
+    @Column(name = "is_archived")
     private boolean isArchived;
 
     /** The instructor's name used for this course. */
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     /** The instructor's email used for this course. */
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
 
     /** The instructor's registration key used for joining. */
-    @Column(name = "registration_key", nullable = false)
+    @Column(name = "registration_key")
     private String registrationKey;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "role")
     private String role;
 
-    @Column(name = "is_displayed_to_students", nullable = false)
+    @Column(name = "is_displayed_to_students")
     private Boolean isDisplayedToStudents;
 
-    @Column(name = "displayed_name", nullable = false)
+    @Column(name = "displayed_name")
     private String displayedName;
 
-    @Column(name = "instructor_privileges", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "instructor_privileges", columnDefinition = "TEXT")
     private String instructorPrivilegesAsText;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     @SuppressWarnings("unused")

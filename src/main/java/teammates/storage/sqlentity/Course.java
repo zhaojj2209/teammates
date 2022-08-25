@@ -14,28 +14,27 @@ import jakarta.persistence.Table;
  * Represents a course entity.
  */
 @Entity
-@Table(name = "courses")
+@Table(name = "courses", schema = "core")
 public class Course extends BaseEntity {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
     private String id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "timezone", nullable = false)
+    @Column(name = "timezone")
     private String timeZone;
 
-    @Column(name = "institute", nullable = false)
+    @Column(name = "institute")
     private String institute;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     @Column(name = "deleted_at")
