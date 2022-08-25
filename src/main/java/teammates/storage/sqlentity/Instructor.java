@@ -18,7 +18,7 @@ import teammates.common.util.StringHelper;
  * --> [is an instructor for] --> Course.
  */
 @Entity
-@Table(name = "instructors", schema = "core")
+@Table(name = "instructors")
 public class Instructor extends BaseEntity {
 
     /**

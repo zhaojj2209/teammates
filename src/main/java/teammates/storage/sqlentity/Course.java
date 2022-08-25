@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
  * Represents a course entity.
  */
 @Entity
-@Table(name = "courses", schema = "core")
+@Table(name = "courses")
 public class Course extends BaseEntity {
 
     @Id
