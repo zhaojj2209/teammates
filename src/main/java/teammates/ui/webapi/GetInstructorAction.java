@@ -25,7 +25,9 @@ class GetInstructorAction extends BasicFeedbackSubmissionAction {
         case INSTRUCTOR_RESULT:
             String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
             InstructorAttributes instructorAttributes = getInstructorOfCourseFromRequest(courseId);
-            if (instructorAttributes == null) {
+            teammates.common.datatransfer.sqlattributes.InstructorAttributes sqlInstructorAttributes =
+                    getSqlInstructorOfCourseFromRequest(courseId);
+            if (instructorAttributes == null && sqlInstructorAttributes == null) {
                 throw new UnauthorizedAccessException(UNAUTHORIZED_ACCESS);
             }
             break;
@@ -48,28 +50,39 @@ class GetInstructorAction extends BasicFeedbackSubmissionAction {
         }
 
         InstructorAttributes instructorAttributes;
+        teammates.common.datatransfer.sqlattributes.InstructorAttributes sqlInstructorAttributes;
         String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
 
         switch (intent) {
         case INSTRUCTOR_SUBMISSION:
         case INSTRUCTOR_RESULT:
             instructorAttributes = getInstructorOfCourseFromRequest(courseId);
+            sqlInstructorAttributes = getSqlInstructorOfCourseFromRequest(courseId);
             break;
         case FULL_DETAIL:
             instructorAttributes = logic.getInstructorForGoogleId(courseId, userInfo.getId());
+            sqlInstructorAttributes = logicNew.getInstructorForAccountId(courseId, userInfo.getId());
             break;
         default:
             throw new InvalidHttpParameterException("Unknown intent " + intent);
         }
 
-        if (instructorAttributes == null) {
+        if (instructorAttributes == null && sqlInstructorAttributes == null) {
             throw new EntityNotFoundException("Instructor could not be found for this course");
         }
 
-        InstructorData instructorData = new InstructorData(instructorAttributes);
-        instructorData.setInstitute(logic.getCourseInstitute(courseId));
+        InstructorData instructorData = sqlInstructorAttributes == null
+                ? new InstructorData(instructorAttributes)
+                : new InstructorData(sqlInstructorAttributes);
+        String courseInstitute = logicNew.getCourseInstitute(courseId) == null
+                ? logic.getCourseInstitute(courseId)
+                : logicNew.getCourseInstitute(courseId);
+        instructorData.setInstitute(courseInstitute);
         if (intent == Intent.FULL_DETAIL) {
-            instructorData.setGoogleId(instructorAttributes.getGoogleId());
+            String accountId = sqlInstructorAttributes == null
+                    ? sqlInstructorAttributes.getAccountId()
+                    : instructorAttributes.getGoogleId();
+            instructorData.setGoogleId(accountId);
         }
 
         return new JsonResult(instructorData);

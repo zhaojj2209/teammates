@@ -44,11 +44,18 @@ class UpdateInstructorAction extends Action {
                         instructorRequest.getName(), instructorRequest.getEmail(),
                         instructorRequest.getRoleName(), instructorRequest.getIsDisplayedToStudent(),
                         instructorRequest.getDisplayName());
+        teammates.common.datatransfer.sqlattributes.InstructorAttributes sqlInstructorToEdit =
+                retrieveEditedSqlInstructor(courseId, instructorRequest.getId(),
+                        instructorRequest.getName(), instructorRequest.getEmail(),
+                        instructorRequest.getRoleName(), instructorRequest.getIsDisplayedToStudent(),
+                        instructorRequest.getDisplayName());
 
         logic.updateToEnsureValidityOfInstructorsForTheCourse(courseId, instructorToEdit);
+        logicNew.updateToEnsureValidityOfInstructorsForTheCourse(courseId, sqlInstructorToEdit);
 
         try {
             InstructorAttributes updatedInstructor;
+            teammates.common.datatransfer.sqlattributes.InstructorAttributes updatedSqlInstructor = null;
             if (instructorRequest.getId() == null) {
                 updatedInstructor = logic.updateInstructor(
                         InstructorAttributes
@@ -71,7 +78,36 @@ class UpdateInstructorAction extends Action {
                                 .withPrivileges(instructorToEdit.getPrivileges())
                                 .build());
             }
-            InstructorData newInstructorData = new InstructorData(updatedInstructor);
+
+            if (sqlInstructorToEdit != null) {
+                if (instructorRequest.getId() == null) {
+                    updatedSqlInstructor = logicNew.updateInstructor(
+                            teammates.common.datatransfer.sqlattributes.InstructorAttributes
+                                    .updateOptionsWithEmailBuilder(instructorToEdit.getCourseId(),
+                                            instructorRequest.getEmail())
+                                    .withName(instructorToEdit.getName())
+                                    .withDisplayedName(instructorToEdit.getDisplayedName())
+                                    .withIsDisplayedToStudents(instructorToEdit.isDisplayedToStudents())
+                                    .withRole(instructorToEdit.getRole())
+                                    .withPrivileges(instructorToEdit.getPrivileges())
+                                    .build());
+                } else {
+                    updatedSqlInstructor = logicNew.updateInstructorCascade(
+                            teammates.common.datatransfer.sqlattributes.InstructorAttributes
+                                    .updateOptionsWithAccountIdBuilder(instructorToEdit.getCourseId(),
+                                            instructorRequest.getId())
+                                    .withEmail(instructorToEdit.getEmail())
+                                    .withName(instructorToEdit.getName())
+                                    .withDisplayedName(instructorToEdit.getDisplayedName())
+                                    .withIsDisplayedToStudents(instructorToEdit.isDisplayedToStudents())
+                                    .withRole(instructorToEdit.getRole())
+                                    .withPrivileges(instructorToEdit.getPrivileges())
+                                    .build());
+                }
+            }
+            InstructorData newInstructorData = updatedSqlInstructor == null
+                    ? new InstructorData(updatedInstructor)
+                    : new InstructorData(updatedSqlInstructor);
             newInstructorData.setGoogleId(updatedInstructor.getGoogleId());
 
             taskQueuer.scheduleInstructorForSearchIndexing(updatedInstructor.getCourseId(), updatedInstructor.getEmail());
@@ -108,6 +144,50 @@ class UpdateInstructorAction extends Action {
             instructorToEdit = logic.getInstructorForEmail(courseId, instructorEmail);
         } else {
             instructorToEdit = logic.getInstructorForGoogleId(courseId, instructorId);
+        }
+
+        String newDisplayedName = displayedName;
+        if (newDisplayedName == null || newDisplayedName.isEmpty()) {
+            newDisplayedName = Const.DEFAULT_DISPLAY_NAME_FOR_INSTRUCTOR;
+        }
+
+        instructorToEdit.setName(SanitizationHelper.sanitizeName(instructorName));
+        instructorToEdit.setEmail(SanitizationHelper.sanitizeEmail(instructorEmail));
+        instructorToEdit.setRole(SanitizationHelper.sanitizeName(instructorRole));
+        instructorToEdit.setPrivileges(new InstructorPrivileges(instructorToEdit.getRole()));
+        instructorToEdit.setDisplayedName(SanitizationHelper.sanitizeName(newDisplayedName));
+        instructorToEdit.setDisplayedToStudents(isDisplayedToStudents);
+
+        return instructorToEdit;
+    }
+
+    /**
+     * Creates a new Instructor based on given information.
+     * This consists of everything apart from custom privileges.
+     *
+     * @param courseId              Id of the course the instructor is being added to.
+     * @param instructorId          Id of the instructor.
+     * @param instructorName        Name of the instructor.
+     * @param instructorEmail       Email of the instructor.
+     * @param instructorRole        Role of the instructor.
+     * @param isDisplayedToStudents Whether the instructor should be visible to students.
+     * @param displayedName         Name to be visible to students.
+     *                                  Should not be {@code null} even if {@code isDisplayedToStudents} is false.
+     * @return The edited instructor with updated basic info
+     */
+    private teammates.common.datatransfer.sqlattributes.InstructorAttributes retrieveEditedSqlInstructor(
+            String courseId, String instructorId, String instructorName,
+            String instructorEmail, String instructorRole,
+            boolean isDisplayedToStudents, String displayedName) {
+        teammates.common.datatransfer.sqlattributes.InstructorAttributes instructorToEdit;
+        if (instructorId == null) {
+            instructorToEdit = logicNew.getInstructorForEmail(courseId, instructorEmail);
+        } else {
+            instructorToEdit = logicNew.getInstructorForAccountId(courseId, instructorId);
+        }
+
+        if (instructorToEdit == null) {
+            return null;
         }
 
         String newDisplayedName = displayedName;
