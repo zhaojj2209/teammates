@@ -72,6 +72,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.14.3")
     implementation("org.hibernate:hibernate-core:6.1.1.Final")
     implementation("org.postgresql:postgresql:42.4.0")
+    implementation("org.flywaydb:flyway-core:9.2.2")
 
     testAnnotationProcessor(testng)
 
@@ -287,6 +288,11 @@ task serverRun(type: JavaExec) {
 task runDatastoreEmulator(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = "teammates.storage.api.DatastoreEmulatorRunner"
+}
+
+task migrateDb(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "teammates.storage.api.SchemaMigration"
 }
 
 appengine {

@@ -19,8 +19,7 @@ public final class HibernateUtil {
                 .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
                 .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
                 .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
-                .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:"
-                        + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB)
+                .setProperty("hibernate.connection.url", Config.getDbConnectionUrl())
                 .setProperty("show_sql", "true")
                 .addPackage("teammates.storage.sqlentity")
                 .addAnnotatedClass(Course.class)

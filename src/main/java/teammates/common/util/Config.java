@@ -290,6 +290,16 @@ public final class Config {
         return new AppUrl(APP_FRONTEND_URL + relativeUrl);
     }
 
+    public static String getDbConnectionUrl() {
+        if (IS_DEV_SERVER) {
+            return "jdbc:postgresql://localhost:"
+                    + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB;
+        } else {
+            // TODO: change to return production url
+            return "";
+        }
+    }
+
     public static boolean isUsingSendgrid() {
         return "sendgrid".equalsIgnoreCase(EMAIL_SERVICE) && SENDGRID_APIKEY != null && !SENDGRID_APIKEY.isEmpty();
     }
