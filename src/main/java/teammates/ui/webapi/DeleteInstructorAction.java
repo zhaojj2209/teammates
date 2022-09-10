@@ -39,10 +39,13 @@ class DeleteInstructorAction extends Action {
         String courseId = getNonNullRequestParamValue(Const.ParamsNames.COURSE_ID);
 
         InstructorAttributes instructor;
+        teammates.common.datatransfer.sqlattributes.InstructorAttributes sqlInstructor;
         if (instructorId != null) {
             instructor = logic.getInstructorForGoogleId(courseId, instructorId);
+            sqlInstructor = logicNew.getInstructorForAccountId(courseId, instructorId);
         } else if (instructorEmail != null) {
             instructor = logic.getInstructorForEmail(courseId, instructorEmail);
+            sqlInstructor = logicNew.getInstructorForEmail(courseId, instructorEmail);
         } else {
             throw new InvalidHttpParameterException("Instructor to delete not specified");
         }
@@ -58,6 +61,9 @@ class DeleteInstructorAction extends Action {
         }
 
         logic.deleteInstructorCascade(courseId, instructor.getEmail());
+        if (sqlInstructor != null) {
+            logicNew.deleteInstructorCascade(courseId, sqlInstructor.getEmail());
+        }
 
         return new JsonResult("Instructor is successfully deleted.");
     }
@@ -75,6 +81,22 @@ class DeleteInstructorAction extends Action {
         boolean hasAlternativeVisibleInstructor = false;
 
         for (InstructorAttributes instr : instructors) {
+
+            hasAlternativeModifyInstructor = hasAlternativeModifyInstructor || instr.isRegistered()
+                    && !instr.getEmail().equals(instructorToDeleteEmail)
+                    && instr.isAllowedForPrivilege(Const.InstructorPermissions.CAN_MODIFY_INSTRUCTOR);
+
+            hasAlternativeVisibleInstructor = hasAlternativeVisibleInstructor
+                    || instr.isDisplayedToStudents() && !instr.getEmail().equals(instructorToDeleteEmail);
+
+            if (hasAlternativeModifyInstructor && hasAlternativeVisibleInstructor) {
+                return true;
+            }
+        }
+
+        List<teammates.common.datatransfer.sqlattributes.InstructorAttributes> sqlInstructors =
+                logicNew.getInstructorsForCourse(courseId);
+        for (teammates.common.datatransfer.sqlattributes.InstructorAttributes instr : sqlInstructors) {
 
             hasAlternativeModifyInstructor = hasAlternativeModifyInstructor || instr.isRegistered()
                     && !instr.getEmail().equals(instructorToDeleteEmail)

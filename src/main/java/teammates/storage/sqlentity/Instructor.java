@@ -37,7 +37,7 @@ public class Instructor extends BaseEntity {
     /**
      * The account id of the instructor, used as the foreign key to locate the Account object.
      */
-    @Column(name = "account_id", nullable = false)
+    @Column(name = "account_id")
     private String accountId;
 
     /** The foreign key to locate the Course object. */

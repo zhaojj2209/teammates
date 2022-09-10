@@ -109,6 +109,22 @@ abstract class BasicFeedbackSubmissionAction extends Action {
     }
 
     /**
+     * Gets the instructor involved in the submission process.
+     */
+    teammates.common.datatransfer.sqlattributes.InstructorAttributes getSqlInstructorOfCourseFromRequest(String courseId) {
+        String moderatedPerson = getRequestParamValue(Const.ParamsNames.FEEDBACK_SESSION_MODERATED_PERSON);
+        String previewAsPerson = getRequestParamValue(Const.ParamsNames.PREVIEWAS);
+
+        if (!StringHelper.isEmpty(moderatedPerson)) {
+            return logicNew.getInstructorForEmail(courseId, moderatedPerson);
+        } else if (!StringHelper.isEmpty(previewAsPerson)) {
+            return logicNew.getInstructorForEmail(courseId, previewAsPerson);
+        } else {
+            return getPossiblyUnregisteredSqlInstructor(courseId);
+        }
+    }
+
+    /**
      * Checks the access control for instructor feedback submission.
      */
     void checkAccessControlForInstructorFeedbackSubmission(

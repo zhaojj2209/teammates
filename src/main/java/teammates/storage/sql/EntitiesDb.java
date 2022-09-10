@@ -1,5 +1,9 @@
 package teammates.storage.sql;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -94,6 +98,9 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
      * Checks whether two values are the same.
      */
     <T> boolean hasSameValue(T oldValue, T newValue) {
+        if (oldValue == null) {
+            return newValue == null;
+        }
         return oldValue.equals(newValue);
     }
 
@@ -138,6 +145,17 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
      * Converts from entity to attributes.
      */
     abstract A makeAttributes(E entity);
+
+    /**
+     * Converts a collection of entities to a list of attributes.
+     */
+    List<A> makeAttributes(Collection<E> entities) {
+        List<A> attributes = new LinkedList<>();
+        for (E entity : entities) {
+            attributes.add(makeAttributes(entity));
+        }
+        return attributes;
+    }
 
     /**
      * Converts from entity to attributes.
