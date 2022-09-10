@@ -10,6 +10,8 @@ public class SchemaMigration {
                 Config.getDbConnectionUrl(),
                 Config.APP_LOCALPOSTGRES_USERNAME,
                 Config.APP_LOCALPOSTGRES_PASSWORD)
+                .baselineVersion(Config.APP_FLYWAY_BASELINEVERSION)
+                .baselineOnMigrate(true)
                 .locations("classpath:db/migration")
                 .load();
 
