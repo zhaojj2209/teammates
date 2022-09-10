@@ -1,9 +1,13 @@
 package teammates.storage.api;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.internal.info.MigrationInfoDumper;
 import teammates.common.util.Config;
+import teammates.common.util.Logger;
 
 public class SchemaMigration {
+
+    private static final Logger log = Logger.getLogger();
 
     public static void main(String[] args) {
         Flyway flyway = Flyway.configure().dataSource(
@@ -16,5 +20,7 @@ public class SchemaMigration {
                 .load();
 
         flyway.migrate();
+
+        log.info(MigrationInfoDumper.dumpToAsciiTable(flyway.info().all()));
     }
 }
