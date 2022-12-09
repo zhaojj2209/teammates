@@ -109,6 +109,9 @@ public final class Config {
     /** The value of the "app.localpostgres.db" in build-dev.properties file. */
     public static final String APP_LOCALPOSTGRES_DB;
 
+    /** The value of the "app.flyway.baselineversion" in build-dev.properties file. */
+    public static final String APP_FLYWAY_BASELINEVERSION;
+
     /** The value of the "app.enable.devserver.login" in build-dev.properties file. */
     public static final boolean ENABLE_DEVSERVER_LOGIN;
 
@@ -186,6 +189,7 @@ public final class Config {
         APP_LOCALPOSTGRES_USERNAME = devProperties.getProperty("app.localpostgres.username", "teammates");
         APP_LOCALPOSTGRES_PASSWORD = devProperties.getProperty("app.localpostgres.password", "teammates");
         APP_LOCALPOSTGRES_DB = devProperties.getProperty("app.localpostgres.db", "teammates");
+        APP_FLYWAY_BASELINEVERSION = devProperties.getProperty("app.flyway.baselineversion", "1.0");
         ENABLE_DEVSERVER_LOGIN = Boolean.parseBoolean(devProperties.getProperty("app.enable.devserver.login", "false"));
         TASKQUEUE_ACTIVE = Boolean.parseBoolean(devProperties.getProperty("app.taskqueue.active", "true"));
     }
@@ -288,6 +292,16 @@ public final class Config {
      */
     public static AppUrl getFrontEndAppUrl(String relativeUrl) {
         return new AppUrl(APP_FRONTEND_URL + relativeUrl);
+    }
+
+    public static String getDbConnectionUrl() {
+        if (IS_DEV_SERVER) {
+            return "jdbc:postgresql://localhost:"
+                    + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB;
+        } else {
+            // TODO: change to return production url
+            return "";
+        }
     }
 
     public static boolean isUsingSendgrid() {
