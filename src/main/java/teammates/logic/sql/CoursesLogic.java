@@ -90,8 +90,6 @@ public final class CoursesLogic {
         try {
             instructorsLogic.createInstructor(instructor);
         } catch (EntityAlreadyExistsException | InvalidParametersException e) {
-            // roll back the transaction
-            coursesDb.deleteCourse(createdCourse.getId());
             String errorMessage = "Unexpected exception while trying to create instructor for a new course "
                     + System.lineSeparator() + instructor.toString();
             assert false : errorMessage;

@@ -3,13 +3,11 @@ package teammates.storage.sql;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import teammates.common.datatransfer.sqlattributes.InstructorAttributes;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
-import teammates.common.util.HibernateUtil;
 import teammates.storage.sqlentity.Instructor;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -231,18 +229,17 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private Instructor getInstructorEntityForAccountId(String courseId, String accountId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+        CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Instructor> cr = criteriaBuilder.createQuery(Instructor.class);
-        Root<Instructor> root = cr.from(Instructor.class);
+        Root<Instructor> root = crq.from(Instructor.class);
         Predicate isSameAccount = criteriaBuilder.equal(root.get("accountId"), accountId);
         Predicate isSameCourse = criteriaBuilder.equal(root.get("courseId"), courseId);
-        cr.select(root).where(criteriaBuilder.and(isSameAccount, isSameCourse));
 
-        Query<Instructor> query = session.createQuery(cr);
+        crq.select(root).where(criteriaBuilder.and(isSameAccount, isSameCourse));
+
+        Query<Instructor> query = currentSession.createQuery(crq);
         List<Instructor> results = query.getResultList();
-        session.close();
 
         if (results.isEmpty()) {
             return null;
@@ -256,41 +253,36 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private Instructor getInstructorEntityById(String courseId, String email) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Instructor instructor = session.get(Instructor.class, Instructor.generateId(email, courseId));
-        session.close();
-        return instructor;
+        return currentSession.get(Instructor.class, Instructor.generateId(email, courseId));
     }
 
     private List<Instructor> getInstructorEntitiesThatAreDisplayedInCourse(String courseId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+        CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Instructor> cr = criteriaBuilder.createQuery(Instructor.class);
-        Root<Instructor> root = cr.from(Instructor.class);
+        Root<Instructor> root = crq.from(Instructor.class);
         Predicate isSameCourse = criteriaBuilder.equal(root.get("courseId"), courseId);
         Predicate isDisplayedToStudents = criteriaBuilder.equal(root.get("isDisplayedToStudents"), true);
-        cr.select(root).where(criteriaBuilder.and(isSameCourse, isDisplayedToStudents));
 
-        Query<Instructor> query = session.createQuery(cr);
+        crq.select(root).where(criteriaBuilder.and(isSameCourse, isDisplayedToStudents));
+
+        Query<Instructor> query = currentSession.createQuery(crq);
         List<Instructor> results = query.getResultList();
-        session.close();
 
         return results;
     }
 
     private Instructor getInstructorEntityForRegistrationKey(String key) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+        CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Instructor> cr = criteriaBuilder.createQuery(Instructor.class);
-        Root<Instructor> root = cr.from(Instructor.class);
+        Root<Instructor> root = crq.from(Instructor.class);
         Predicate isSameRegistrationKey = criteriaBuilder.equal(root.get("registrationKey"), key);
-        cr.select(root).where(isSameRegistrationKey);
 
-        Query<Instructor> query = session.createQuery(cr);
+        crq.select(root).where(isSameRegistrationKey);
+
+        Query<Instructor> query = currentSession.createQuery(crq);
         List<Instructor> instructorList = query.getResultList();
-        session.close();
 
         // If registration key detected is not unique, something is wrong
         if (instructorList.size() > 1) {
@@ -310,39 +302,35 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
      * This means that the corresponding course is archived by the instructor.
      */
     private List<Instructor> getInstructorEntitiesForAccountId(String accountId, boolean omitArchived) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+        CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Instructor> cr = criteriaBuilder.createQuery(Instructor.class);
-        Root<Instructor> root = cr.from(Instructor.class);
+        Root<Instructor> root = crq.from(Instructor.class);
         Predicate isSameAccount = criteriaBuilder.equal(root.get("accountId"), accountId);
 
         if (omitArchived) {
             Predicate isNotArchived = criteriaBuilder.equal(root.get("isArchived"), false);
-            cr.select(root).where(criteriaBuilder.and(isSameAccount, isNotArchived));
+            crq.select(root).where(criteriaBuilder.and(isSameAccount, isNotArchived));
         } else {
-            cr.select(root).where(isSameAccount);
+            crq.select(root).where(isSameAccount);
         }
 
-        Query<Instructor> query = session.createQuery(cr);
+        Query<Instructor> query = currentSession.createQuery(crq);
         List<Instructor> results = query.getResultList();
-        session.close();
 
         return results;
     }
 
     private List<Instructor> getInstructorEntitiesForCourse(String courseId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
+        CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<Instructor> cr = criteriaBuilder.createQuery(Instructor.class);
-        Root<Instructor> root = cr.from(Instructor.class);
+        Root<Instructor> root = crq.from(Instructor.class);
         Predicate isSameCourse = criteriaBuilder.equal(root.get("courseId"), courseId);
-        cr.select(root).where(isSameCourse);
+        crq.select(root).where(isSameCourse);
 
-        Query<Instructor> query = session.createQuery(cr);
+        Query<Instructor> query = currentSession.createQuery(crq);
         List<Instructor> results = query.getResultList();
-        session.close();
 
         return results;
     }

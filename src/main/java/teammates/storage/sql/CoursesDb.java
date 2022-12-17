@@ -2,8 +2,6 @@ package teammates.storage.sql;
 
 import java.time.Instant;
 
-import org.hibernate.Session;
-
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
@@ -87,9 +85,7 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
     public void deleteCourse(String courseId) {
         assert courseId != null;
 
-        Course course = getCourseEntity(courseId);
-
-        deleteEntity(course);
+        deleteEntity(getCourseEntity(courseId));
     }
 
     /**
@@ -139,10 +135,8 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
     }
 
     private Course getCourseEntity(String courseId) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Course course = session.get(Course.class, courseId);
-        session.close();
-        return course;
+        return HibernateUtil.getSessionFactory().getCurrentSession()
+                .get(Course.class, courseId);
     }
 
 }
