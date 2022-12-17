@@ -11,6 +11,7 @@ import org.apache.http.HttpStatus;
 
 import com.google.cloud.datastore.DatastoreException;
 
+import org.hibernate.HibernateException;
 import teammates.common.datatransfer.logs.RequestLogUser;
 import teammates.common.exception.DeadlineExceededException;
 import teammates.common.util.Logger;
@@ -92,6 +93,10 @@ public class WebApiServlet extends HttpServlet {
             statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             log.severe(e.getClass().getSimpleName() + " caught by WebApiServlet: " + e.getMessage(), e);
             throwError(resp, statusCode, e.getMessage());
+        } catch (HibernateException hbe) {
+            statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
+            log.severe(hbe.getClass().getSimpleName() + " caught by WebApiServlet: " + hbe.getMessage(), hbe);
+            throwError(resp, statusCode, hbe.getMessage());
         } catch (Throwable t) {
             statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             log.severe(t.getClass().getSimpleName() + " caught by WebApiServlet: " + t.getMessage(), t);
