@@ -33,9 +33,6 @@ public class HibernateSessionRequestFilter implements Filter {
             sessionFactory.getCurrentSession().getTransaction().commit();
             sessionFactory.getCurrentSession().close();
         } catch (Throwable ex) {
-            ex.printStackTrace();
-
-            // Rollback the transaction
             try {
                 if (sessionFactory.getCurrentSession().getTransaction().isActive()) {
                     sessionFactory.getCurrentSession().getTransaction().rollback();

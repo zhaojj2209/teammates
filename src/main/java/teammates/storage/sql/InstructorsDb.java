@@ -3,11 +3,13 @@ package teammates.storage.sql;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 
 import teammates.common.datatransfer.sqlattributes.InstructorAttributes;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
+import teammates.common.util.HibernateUtil;
 import teammates.storage.sqlentity.Instructor;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -229,6 +231,8 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private Instructor getInstructorEntityForAccountId(String courseId, String accountId) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
@@ -253,10 +257,14 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private Instructor getInstructorEntityById(String courseId, String email) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         return currentSession.get(Instructor.class, Instructor.generateId(email, courseId));
     }
 
     private List<Instructor> getInstructorEntitiesThatAreDisplayedInCourse(String courseId) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
@@ -273,6 +281,8 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private Instructor getInstructorEntityForRegistrationKey(String key) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
@@ -302,6 +312,8 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
      * This means that the corresponding course is archived by the instructor.
      */
     private List<Instructor> getInstructorEntitiesForAccountId(String accountId, boolean omitArchived) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 
@@ -322,6 +334,8 @@ public final class InstructorsDb extends EntitiesDb<Instructor, InstructorAttrib
     }
 
     private List<Instructor> getInstructorEntitiesForCourse(String courseId) {
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+
         CriteriaBuilder criteriaBuilder = currentSession.getCriteriaBuilder();
         CriteriaQuery<Instructor> crq = criteriaBuilder.createQuery(Instructor.class);
 

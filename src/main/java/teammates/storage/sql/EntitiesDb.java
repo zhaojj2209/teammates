@@ -39,8 +39,6 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
 
     static final Logger log = Logger.getLogger();
 
-    protected final Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
-
     /**
      * Creates the entity in the database.
      *
