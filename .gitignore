@@ -12,6 +12,8 @@
 node_modules/
 npm-debug.log
 coverage/*
+.eslintcache
+.stylelintcache
 
 # Gradle
 .gradle
@@ -82,3 +84,5 @@ postgres_data/*
 # Docs
 docs/_site/*
 docs/_markbind/logs/*
+.stylelintcache
+.eslintcache
