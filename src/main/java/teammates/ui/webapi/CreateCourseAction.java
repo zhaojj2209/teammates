@@ -67,12 +67,22 @@ class CreateCourseAction extends Action {
                         .withInstitute(institute)
                         .build();
 
+        teammates.common.datatransfer.sqlattributes.CourseAttributes sqlCourseAttributes =
+                teammates.common.datatransfer.sqlattributes.CourseAttributes.builder(newCourseId)
+                        .withName(newCourseName)
+                        .withTimezone(newCourseTimeZone)
+                        .withInstitute(institute)
+                        .build();
+
         try {
             logic.createCourseAndInstructor(userInfo.getId(), courseAttributes);
 
             InstructorAttributes instructorCreatedForCourse = logic.getInstructorForGoogleId(newCourseId, userInfo.getId());
             taskQueuer.scheduleInstructorForSearchIndexing(instructorCreatedForCourse.getCourseId(),
                     instructorCreatedForCourse.getEmail());
+
+            logicNew.createCourseAndInstructor(userInfo.getId(), sqlCourseAttributes);
+
         } catch (EntityAlreadyExistsException e) {
             throw new InvalidOperationException("The course ID " + courseAttributes.getId()
                     + " has been used by another course, possibly by some other user."
@@ -81,6 +91,6 @@ class CreateCourseAction extends Action {
             throw new InvalidHttpRequestBodyException(e);
         }
 
-        return new JsonResult(new CourseData(logic.getCourse(newCourseId)));
+        return new JsonResult(new CourseData(logicNew.getCourse(newCourseId)));
     }
 }

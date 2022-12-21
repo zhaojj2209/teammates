@@ -21,6 +21,7 @@ import teammates.logic.api.EmailGenerator;
 import teammates.logic.api.EmailSender;
 import teammates.logic.api.FileStorage;
 import teammates.logic.api.Logic;
+import teammates.logic.api.LogicNew;
 import teammates.logic.api.LogsProcessor;
 import teammates.logic.api.RecaptchaVerifier;
 import teammates.logic.api.TaskQueuer;
@@ -36,6 +37,7 @@ import teammates.ui.request.InvalidHttpRequestBodyException;
 public abstract class Action {
 
     Logic logic = Logic.inst();
+    LogicNew logicNew = LogicNew.inst();
     UserProvision userProvision = UserProvision.inst();
     GateKeeper gateKeeper = GateKeeper.inst();
     EmailGenerator emailGenerator = EmailGenerator.inst();
@@ -50,6 +52,7 @@ public abstract class Action {
     AuthType authType;
     private StudentAttributes unregisteredStudent;
     private InstructorAttributes unregisteredInstructor;
+    private teammates.common.datatransfer.sqlattributes.InstructorAttributes unregisteredSqlInstructor;
 
     // buffer to store the request body
     private String requestBody;
@@ -119,14 +122,17 @@ public abstract class Action {
         String googleId = userInfo == null ? null : userInfo.getId();
 
         user.setGoogleId(googleId);
-        if (unregisteredStudent == null && unregisteredInstructor == null) {
+        if (unregisteredStudent == null && unregisteredInstructor == null && unregisteredSqlInstructor == null) {
             user.setRegkey(getRequestParamValue(Const.ParamsNames.REGKEY));
         } else if (unregisteredStudent != null) {
             user.setRegkey(unregisteredStudent.getKey());
             user.setEmail(unregisteredStudent.getEmail());
-        } else {
+        } else if (unregisteredInstructor != null) {
             user.setRegkey(unregisteredInstructor.getKey());
             user.setEmail(unregisteredInstructor.getEmail());
+        } else {
+            user.setRegkey(unregisteredSqlInstructor.getKey());
+            user.setEmail(unregisteredSqlInstructor.getEmail());
         }
         return user;
     }
@@ -274,12 +280,38 @@ public abstract class Action {
         return Optional.empty();
     }
 
+    /**
+     * Gets the unregistered instructor by the HTTP param.
+     */
+    Optional<teammates.common.datatransfer.sqlattributes.InstructorAttributes> getUnregisteredSqlInstructor() {
+        String key = getRequestParamValue(Const.ParamsNames.REGKEY);
+        if (!StringHelper.isEmpty(key)) {
+            teammates.common.datatransfer.sqlattributes.InstructorAttributes instructorAttributes =
+                    logicNew.getInstructorForRegistrationKey(key);
+            if (instructorAttributes == null) {
+                return Optional.empty();
+            }
+            unregisteredSqlInstructor = instructorAttributes;
+            return Optional.of(instructorAttributes);
+        }
+        return Optional.empty();
+    }
+
     InstructorAttributes getPossiblyUnregisteredInstructor(String courseId) {
         return getUnregisteredInstructor().orElseGet(() -> {
             if (userInfo == null) {
                 return null;
             }
             return logic.getInstructorForGoogleId(courseId, userInfo.getId());
+        });
+    }
+
+    teammates.common.datatransfer.sqlattributes.InstructorAttributes getPossiblyUnregisteredSqlInstructor(String courseId) {
+        return getUnregisteredSqlInstructor().orElseGet(() -> {
+            if (userInfo == null) {
+                return null;
+            }
+            return logicNew.getInstructorForAccountId(courseId, userInfo.getId());
         });
     }
 

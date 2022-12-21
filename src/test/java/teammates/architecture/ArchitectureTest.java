@@ -26,6 +26,7 @@ public class ArchitectureTest {
     private static final String LOGIC_PACKAGE = "teammates.logic";
 
     private static final String LOGIC_CORE_PACKAGE = LOGIC_PACKAGE + ".core";
+    private static final String LOGIC_SQL_PACKAGE = LOGIC_PACKAGE + ".sql";
     private static final String LOGIC_API_PACKAGE = LOGIC_PACKAGE + ".api";
     private static final String LOGIC_EXTERNAL_PACKAGE = LOGIC_PACKAGE + ".external";
 
@@ -205,6 +206,7 @@ public class ArchitectureTest {
     public void testArchitecture_logic_logicCanOnlyAccessStorageApi() {
         noClasses().that().resideInAPackage(includeSubpackages(LOGIC_PACKAGE))
                 .and().resideOutsideOfPackage(includeSubpackages(LOGIC_CORE_PACKAGE))
+                .and().resideOutsideOfPackage(includeSubpackages(LOGIC_SQL_PACKAGE))
                 .should().accessClassesThat().resideInAPackage(includeSubpackages(STORAGE_PACKAGE))
                 .check(forClasses(LOGIC_PACKAGE, STORAGE_PACKAGE));
 

@@ -33,6 +33,11 @@ class RestoreCourseAction extends Action {
         try {
             logic.restoreCourseFromRecycleBin(idOfCourseToRestore);
 
+            // If course is found in SQL database, bin said course as well
+            if (logicNew.getCourse(idOfCourseToRestore) != null) {
+                logicNew.restoreCourseFromRecycleBin(idOfCourseToRestore);
+            }
+
             statusMessage = "The course " + idOfCourseToRestore + " has been restored.";
         } catch (EntityDoesNotExistException e) {
             throw new EntityNotFoundException(e);

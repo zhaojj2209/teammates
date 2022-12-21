@@ -1,39 +1,40 @@
-package teammates.storage.persistence;
+package teammates.storage.sqlentity;
 
 import java.time.Instant;
 
-import teammates.common.util.Const;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 /**
  * Represents a course entity.
  */
 @Entity
-@Table(name = "courses", uniqueConstraints = { @UniqueConstraint(columnNames = "id") })
-public class Course {
+@Table(name = "courses")
+public class Course extends BaseEntity {
 
     @Id
-    @Column(name = "id", unique = true, nullable = false)
     private String id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "timezone", nullable = false)
+    @Column(name = "timezone")
     private String timeZone;
 
-    @Column(name = "institute", nullable = false)
+    @Column(name = "institute")
     private String institute;
 
-    @Column(name = "created_at", nullable = false)
+    @CreationTimestamp
+    @Column(name = "created_at")
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     @Column(name = "deleted_at")
@@ -43,23 +44,14 @@ public class Course {
         // recommended by Hibernate
     }
 
-    public Course(String courseId, String courseName, String courseTimeZone, String institute,
-            Instant createdAt, Instant deletedAt) {
+    public Course(String courseId, String courseName, String courseTimeZone, String institute, Instant deletedAt) {
         this.setUniqueId(courseId);
         this.setName(courseName);
-        if (courseTimeZone == null) {
-            this.setTimeZone(Const.DEFAULT_TIME_ZONE);
-        } else {
-            this.setTimeZone(courseTimeZone);
-        }
+        this.setTimeZone(courseTimeZone);
         this.setInstitute(institute);
-        if (createdAt == null) {
-            this.setCreatedAt(Instant.now());
-        } else {
-            this.setCreatedAt(createdAt);
+        if (deletedAt != null) {
+            this.setDeletedAt(deletedAt);
         }
-        this.setUpdatedAt(this.createdAt);
-        this.setDeletedAt(deletedAt);
     }
 
     public String getUniqueId() {

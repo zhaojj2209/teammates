@@ -44,10 +44,15 @@ class CreateInstructorAction extends Action {
         InstructorAttributes instructorToAdd = createInstructorWithBasicAttributes(courseId,
                 instructorRequest.getName(), instructorRequest.getEmail(), instructorRequest.getRoleName(),
                 instructorRequest.getIsDisplayedToStudent(), instructorRequest.getDisplayName());
+        teammates.common.datatransfer.sqlattributes.InstructorAttributes sqlInstructor =
+                createSqlInstructorWithBasicAttributes(courseId,
+                instructorRequest.getName(), instructorRequest.getEmail(), instructorRequest.getRoleName(),
+                instructorRequest.getIsDisplayedToStudent(), instructorRequest.getDisplayName());
 
         // Process adding the instructor and setup status to be shown to user and admin
         try {
             InstructorAttributes createdInstructor = logic.createInstructor(instructorToAdd);
+            logicNew.createInstructor(sqlInstructor);
             taskQueuer.scheduleCourseRegistrationInviteToInstructor(
                     userInfo.id, instructorToAdd.getEmail(), instructorToAdd.getCourseId(), false);
             taskQueuer.scheduleInstructorForSearchIndexing(createdInstructor.getCourseId(), createdInstructor.getEmail());
@@ -92,6 +97,44 @@ class CreateInstructorAction extends Action {
         InstructorPrivileges privileges = new InstructorPrivileges(instructorRole);
 
         return InstructorAttributes.builder(courseId, instrEmail)
+                .withName(instrName)
+                .withRole(instrRole)
+                .withIsDisplayedToStudents(isDisplayedToStudents)
+                .withDisplayedName(instrDisplayedName)
+                .withPrivileges(privileges)
+                .build();
+    }
+
+    /**
+     * Creates a new instructor with basic information.
+     * This consists of everything apart from custom privileges.
+     *
+     * @param courseId              Id of the course the instructor is being added to.
+     * @param instructorName        Name of the instructor.
+     * @param instructorEmail       Email of the instructor.
+     * @param instructorRole        Role of the instructor.
+     * @param isDisplayedToStudents Whether the instructor should be visible to students.
+     * @param displayedName         Name to be visible to students.
+     *                                  Should not be {@code null} even if {@code isDisplayedToStudents} is false.
+     * @return An instructor with basic info, excluding custom privileges
+     */
+    private teammates.common.datatransfer.sqlattributes.InstructorAttributes createSqlInstructorWithBasicAttributes(
+            String courseId, String instructorName, String instructorEmail, String instructorRole,
+            boolean isDisplayedToStudents, String displayedName) {
+
+        String instrName = SanitizationHelper.sanitizeName(instructorName);
+        String instrEmail = SanitizationHelper.sanitizeEmail(instructorEmail);
+        String instrRole = SanitizationHelper.sanitizeName(instructorRole);
+
+        String instrDisplayedName = displayedName;
+        if (displayedName == null || displayedName.isEmpty()) {
+            instrDisplayedName = Const.DEFAULT_DISPLAY_NAME_FOR_INSTRUCTOR;
+        }
+
+        instrDisplayedName = SanitizationHelper.sanitizeName(instrDisplayedName);
+        InstructorPrivileges privileges = new InstructorPrivileges(instructorRole);
+
+        return teammates.common.datatransfer.sqlattributes.InstructorAttributes.builder(courseId, instrEmail)
                 .withName(instrName)
                 .withRole(instrRole)
                 .withIsDisplayedToStudents(isDisplayedToStudents)

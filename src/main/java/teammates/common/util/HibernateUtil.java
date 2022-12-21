@@ -3,7 +3,8 @@ package teammates.common.util;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import teammates.storage.persistence.Course;
+import teammates.storage.sqlentity.Course;
+import teammates.storage.sqlentity.Instructor;
 
 /**
  * Class containing utils for getting the Hibernate session factory.
@@ -18,12 +19,12 @@ public final class HibernateUtil {
                 .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
                 .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
                 .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
-                .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:"
-                        + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB)
+                .setProperty("hibernate.connection.url", Config.getDbConnectionUrl())
+                .setProperty("hibernate.hbm2ddl.auto", "validate")
                 .setProperty("show_sql", "true")
-                .setProperty("hibernate.hbm2ddl.auto", "create")
-                .addPackage("teammates.storage.persistence")
-                .addAnnotatedClass(Course.class);
+                .addPackage("teammates.storage.sqlentity")
+                .addAnnotatedClass(Course.class)
+                .addAnnotatedClass(Instructor.class);
 
         sessionFactory = cfg.buildSessionFactory();
     }

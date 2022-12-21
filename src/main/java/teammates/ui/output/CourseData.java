@@ -30,6 +30,17 @@ public class CourseData extends ApiOutput {
         }
     }
 
+    public CourseData(teammates.common.datatransfer.sqlattributes.CourseAttributes courseAttributes) {
+        this.courseId = courseAttributes.getId();
+        this.courseName = courseAttributes.getName();
+        this.timeZone = courseAttributes.getTimeZone();
+        this.institute = courseAttributes.getInstitute();
+        this.creationTimestamp = courseAttributes.getCreatedAt().toEpochMilli();
+        if (courseAttributes.getDeletedAt() != null) {
+            this.deletionTimestamp = courseAttributes.getDeletedAt().toEpochMilli();
+        }
+    }
+
     public String getCourseId() {
         return courseId;
     }
