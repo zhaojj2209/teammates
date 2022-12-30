@@ -89,14 +89,10 @@ public class WebApiServlet extends HttpServlet {
             statusCode = HttpStatus.SC_GATEWAY_TIMEOUT;
             log.severe(dee.getClass().getSimpleName() + " caught by WebApiServlet", dee);
             throwError(resp, statusCode, "The request exceeded the server timeout limit. Please try again later.");
-        } catch (DatastoreException e) {
+        } catch (DatastoreException | HibernateException e) {
             statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             log.severe(e.getClass().getSimpleName() + " caught by WebApiServlet: " + e.getMessage(), e);
             throwError(resp, statusCode, e.getMessage());
-        } catch (HibernateException hbe) {
-            statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
-            log.severe(hbe.getClass().getSimpleName() + " caught by WebApiServlet: " + hbe.getMessage(), hbe);
-            throwError(resp, statusCode, hbe.getMessage());
         } catch (Throwable t) {
             statusCode = HttpStatus.SC_INTERNAL_SERVER_ERROR;
             log.severe(t.getClass().getSimpleName() + " caught by WebApiServlet: " + t.getMessage(), t);

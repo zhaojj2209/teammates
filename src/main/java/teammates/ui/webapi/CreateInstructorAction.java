@@ -5,6 +5,7 @@ import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
+import teammates.common.util.HibernateUtil;
 import teammates.common.util.SanitizationHelper;
 import teammates.ui.output.InstructorData;
 import teammates.ui.request.InstructorCreateRequest;
@@ -59,9 +60,13 @@ class CreateInstructorAction extends Action {
 
             return new JsonResult(new InstructorData(createdInstructor));
         } catch (EntityAlreadyExistsException e) {
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+
             throw new InvalidOperationException(
                     "An instructor with the same email address already exists in the course.", e);
         } catch (InvalidParametersException e) {
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+
             throw new InvalidHttpRequestBodyException(e);
         }
 
