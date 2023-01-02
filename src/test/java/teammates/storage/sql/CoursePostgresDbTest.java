@@ -18,7 +18,7 @@ public class CoursePostgresDbTest extends BaseTestCaseWithLocalPostgresSqlDataba
     private static PostgreSQLContainer pgsql;
 
     @BeforeClass
-    public static void init() {
+    public static void startContainer() {
         pgsql = new PostgreSQLContainer<>("postgres:14.4")
                 .withDatabaseName("pgsql-test")
                 .withUsername("pgsql-test")
@@ -29,7 +29,7 @@ public class CoursePostgresDbTest extends BaseTestCaseWithLocalPostgresSqlDataba
     }
 
     @AfterClass
-    public static void destroy() {
+    public static void closeContainer() {
         pgsql.close();
     }
 

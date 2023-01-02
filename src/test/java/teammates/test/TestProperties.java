@@ -48,7 +48,6 @@ public final class TestProperties {
         }
     }
 
-
     public static boolean isSearchServiceActive() {
         return !StringHelper.isEmpty(SEARCH_SERVICE_HOST);
     }
