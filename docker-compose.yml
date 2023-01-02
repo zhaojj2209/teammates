@@ -23,14 +23,3 @@ services:
       POSTGRES_USER: teammates
       POSTGRES_PASSWORD: teammates
       POSTGRES_DB: teammates
-  postgres-test:
-    image: postgres:14.4
-    restart: always
-    volumes:
-      - ./postgres-test-data:/var/lib/postgresql-test/data
-    ports:
-      - 5433:5433
-    environment:
-      POSTGRES_USER: teammates-test
-      POSTGRES_PASSWORD: teammates-test
-      POSTGRES_DB: teammates-test
