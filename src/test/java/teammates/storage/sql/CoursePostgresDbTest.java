@@ -15,23 +15,6 @@ import java.sql.Statement;
  */
 public class CoursePostgresDbTest extends BaseTestCaseWithLocalPostgresSqlDatabaseAccess {
     private final CoursesDb coursesDb = CoursesDb.inst();
-    private static PostgreSQLContainer pgsql;
-
-    @BeforeClass
-    public static void startContainer() {
-        pgsql = new PostgreSQLContainer<>("postgres:14.4")
-                .withDatabaseName("pgsql-test")
-                .withUsername("pgsql-test")
-                .withPassword("pgsql-test");
-        pgsql.start();
-        System.out.println(pgsql.getExposedPorts());
-        System.out.println(pgsql.getLivenessCheckPortNumbers());
-    }
-
-    @AfterClass
-    public static void closeContainer() {
-        pgsql.close();
-    }
 
     @Test
     public void testContainer() throws Exception {
