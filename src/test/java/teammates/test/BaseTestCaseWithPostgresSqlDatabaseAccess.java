@@ -45,6 +45,7 @@ public abstract class BaseTestCaseWithPostgresSqlDatabaseAccess extends BaseTest
     private void equalizeIrrelevantData(CourseAttributes expected, CourseAttributes actual) {
         // Ignore time field as it is stamped at the time of creation in testing
         expected.setCreatedAt(actual.getCreatedAt());
+        expected.setUpdatedAt(actual.getUpdatedAt());
     }
 
 }

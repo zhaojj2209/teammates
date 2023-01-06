@@ -13,28 +13,28 @@ public final class HibernateUtil {
 
     private static SessionFactory sessionFactory;
 
-    static {
-        Configuration cfg = new Configuration()
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
-                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
-                .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
-                .setProperty("hibernate.connection.url", Config.getDbConnectionUrl())
-                .setProperty("hibernate.hbm2ddl.auto", "validate")
-                .setProperty("show_sql", "true")
-                .addPackage("teammates.storage.sqlentity")
-                .addAnnotatedClass(Course.class)
-                .addAnnotatedClass(Instructor.class);
-
-        sessionFactory = cfg.buildSessionFactory();
-    }
-
     private HibernateUtil() {
         // Utility class
         // Intentional private constructor to prevent instantiation.
     }
 
     public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+            Configuration cfg = new Configuration()
+                    .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
+                    .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
+                    .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
+                    .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
+                    .setProperty("hibernate.connection.url", Config.getDbConnectionUrl())
+                    .setProperty("hibernate.hbm2ddl.auto", "validate")
+                    .setProperty("show_sql", "true")
+                    .addPackage("teammates.storage.sqlentity")
+                    .addAnnotatedClass(Course.class)
+                    .addAnnotatedClass(Instructor.class);
+
+            sessionFactory = cfg.buildSessionFactory();
+        }
+
         return sessionFactory;
     }
 
@@ -43,5 +43,22 @@ public final class HibernateUtil {
      */
     public static void shutdown() {
         getSessionFactory().close();
+    }
+
+    public static SessionFactory setSessionFactoryForTesting(String username, String password, String url) {
+        Configuration cfg = new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
+                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
+                .setProperty("hibernate.connection.username", username)
+                .setProperty("hibernate.connection.password", password)
+                .setProperty("hibernate.connection.url", url)
+                .setProperty("hibernate.hbm2ddl.auto", "validate")
+                .setProperty("show_sql", "true")
+                .addPackage("teammates.storage.sqlentity")
+                .addAnnotatedClass(Course.class)
+                .addAnnotatedClass(Instructor.class);
+        sessionFactory = cfg.buildSessionFactory();
+
+        return sessionFactory;
     }
 }
