@@ -7,12 +7,12 @@ import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.FieldValidator;
 import teammates.common.util.StringHelperExtension;
 import teammates.test.AssertHelper;
-import teammates.test.BaseTestCaseWithLocalPostgresSqlDatabaseAccess;
+import teammates.test.BaseTestCaseWithLocalSqlDatabaseAccess;
 
 /**
  * SUT: {@link CoursesDb}.
  */
-public class CoursePostgresDbTest extends BaseTestCaseWithLocalPostgresSqlDatabaseAccess {
+public class CourseDbTest extends BaseTestCaseWithLocalSqlDatabaseAccess {
     private final CoursesDb coursesDb = CoursesDb.inst();
 
     @Test

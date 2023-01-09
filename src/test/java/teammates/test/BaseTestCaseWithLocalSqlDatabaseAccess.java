@@ -12,7 +12,7 @@ import teammates.logic.api.LogicNewExtension;
 
 import javax.sql.DataSource;
 
-public abstract class BaseTestCaseWithLocalPostgresSqlDatabaseAccess extends BaseTestCaseWithPostgresSqlDatabaseAccess {
+public abstract class BaseTestCaseWithLocalSqlDatabaseAccess extends BaseTestCaseWithSqlDatabaseAccess {
     private final LogicNewExtension logic = new LogicNewExtension();
     protected static PostgreSQLContainer pgsql;
 

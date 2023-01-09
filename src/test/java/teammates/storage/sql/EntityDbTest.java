@@ -6,7 +6,7 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.FieldValidator;
 import teammates.test.AssertHelper;
-import teammates.test.BaseTestCaseWithLocalPostgresSqlDatabaseAccess;
+import teammates.test.BaseTestCaseWithLocalSqlDatabaseAccess;
 
 import static teammates.common.util.FieldValidator.COURSE_ID_ERROR_MESSAGE;
 import static teammates.common.util.FieldValidator.REASON_INCORRECT_FORMAT;
@@ -14,7 +14,7 @@ import static teammates.common.util.FieldValidator.REASON_INCORRECT_FORMAT;
 /**
  * SUT: {@link teammates.storage.sql.EntitiesDb}.
  */
-public class EntityPostgresDbTest extends BaseTestCaseWithLocalPostgresSqlDatabaseAccess {
+public class EntityDbTest extends BaseTestCaseWithLocalSqlDatabaseAccess {
 
     // We are using CoursesDb to test EntitiesDb here.
     private final CoursesDb coursesDb = CoursesDb.inst();

@@ -4,7 +4,7 @@ import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.datatransfer.sqlattributes.EntityAttributes;
 import teammates.common.util.JsonUtils;
 
-public abstract class BaseTestCaseWithPostgresSqlDatabaseAccess extends BaseTestCase{
+public abstract class BaseTestCaseWithSqlDatabaseAccess extends BaseTestCase{
     private static final int VERIFICATION_RETRY_COUNT = 5;
     private static final int VERIFICATION_RETRY_DELAY_IN_MS = 1000;
     private static final int OPERATION_RETRY_COUNT = 5;
