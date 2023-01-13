@@ -95,6 +95,11 @@ class CreateCourseAction extends Action {
             throw new InvalidHttpRequestBodyException(e);
         }
 
+        // Forces SQL statements to be executed to synchronize the JDBC connection's
+        // state with the state of objects held in memory, otherwise the
+        // creation timestamp of the newly created Course object will be null
+        HibernateUtil.getSessionFactory().getCurrentSession().flush();
+
         return new JsonResult(new CourseData(logicNew.getCourse(newCourseId)));
     }
 }

@@ -10,6 +10,7 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
+import teammates.common.util.HibernateUtil;
 import teammates.logic.core.AccountsLogic;
 import teammates.storage.sql.CoursesDb;
 
@@ -90,6 +91,9 @@ public final class CoursesLogic {
         try {
             instructorsLogic.createInstructor(instructor);
         } catch (EntityAlreadyExistsException | InvalidParametersException e) {
+            // roll back the transaction
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+
             String errorMessage = "Unexpected exception while trying to create instructor for a new course "
                     + System.lineSeparator() + instructor.toString();
             assert false : errorMessage;

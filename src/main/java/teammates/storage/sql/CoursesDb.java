@@ -135,9 +135,6 @@ public final class CoursesDb extends EntitiesDb<Course, CourseAttributes> {
     }
 
     private Course getCourseEntity(String courseId) {
-        // Flushing forces the creation date of courses created in the same session
-        // to be automatically updated, otherwise it would be null
-        HibernateUtil.getSessionFactory().getCurrentSession().flush();
         return HibernateUtil.getSessionFactory().getCurrentSession()
                 .get(Course.class, courseId);
     }

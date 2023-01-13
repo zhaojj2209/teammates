@@ -68,7 +68,7 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
         E entity = convertToEntityForSaving(entityToAdd);
 
         HibernateUtil.getSessionFactory().getCurrentSession().persist(entity);
-        log.info("Entity created: " + JsonUtils.toJson(entityToAdd));
+        log.info("Entity marked for insertion: " + JsonUtils.toJson(entityToAdd));
 
         return makeAttributes(entity);
     }
