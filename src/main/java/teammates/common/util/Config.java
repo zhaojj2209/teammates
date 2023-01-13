@@ -297,9 +297,27 @@ public final class Config {
     public static String getDbConnectionUrl() {
         if (IS_DEV_SERVER) {
             return "jdbc:postgresql://localhost:"
-                    + Config.APP_LOCALPOSTGRES_PORT + "/" + Config.APP_LOCALPOSTGRES_DB;
+                    + APP_LOCALPOSTGRES_PORT + "/" + APP_LOCALPOSTGRES_DB;
         } else {
-            // TODO: change to return production url
+            // TODO: change to return production DB url
+            return "";
+        }
+    }
+
+    public static String getDbUsername() {
+        if (IS_DEV_SERVER) {
+            return APP_LOCALPOSTGRES_USERNAME;
+        } else {
+            // TODO: change to return production DB username
+            return "";
+        }
+    }
+
+    public static String getDbPassword() {
+        if (IS_DEV_SERVER) {
+            return APP_LOCALPOSTGRES_PASSWORD;
+        } else {
+            // TODO: change to return production DB password
             return "";
         }
     }
