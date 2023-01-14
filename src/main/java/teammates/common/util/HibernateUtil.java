@@ -18,20 +18,27 @@ public final class HibernateUtil {
         // Intentional private constructor to prevent instantiation.
     }
 
+    private static Configuration getConfigForSessionFactory(String username, String password, String url) {
+        return new Configuration()
+                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
+                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
+                .setProperty("hibernate.connection.username", username)
+                .setProperty("hibernate.connection.password", password)
+                .setProperty("hibernate.connection.url", url)
+                .setProperty("hibernate.hbm2ddl.auto", "validate")
+                .setProperty("show_sql", "true")
+                .addPackage("teammates.storage.sqlentity")
+                .addAnnotatedClass(Course.class)
+                .addAnnotatedClass(Instructor.class);
+    }
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
-            Configuration cfg = new Configuration()
-                    .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
-                    .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                    .setProperty("hibernate.connection.username", Config.APP_LOCALPOSTGRES_USERNAME)
-                    .setProperty("hibernate.connection.password", Config.APP_LOCALPOSTGRES_PASSWORD)
-                    .setProperty("hibernate.connection.url", Config.getDbConnectionUrl())
-                    .setProperty("hibernate.hbm2ddl.auto", "validate")
-                    .setProperty("show_sql", "true")
-                    .addPackage("teammates.storage.sqlentity")
-                    .addAnnotatedClass(Course.class)
-                    .addAnnotatedClass(Instructor.class);
-
+            Configuration cfg = getConfigForSessionFactory(
+                    Config.APP_LOCALPOSTGRES_DB,
+                    Config.APP_LOCALPOSTGRES_PASSWORD,
+                    Config.getDbConnectionUrl()
+            );
             sessionFactory = cfg.buildSessionFactory();
         }
 
@@ -45,20 +52,8 @@ public final class HibernateUtil {
         getSessionFactory().close();
     }
 
-    public static SessionFactory setSessionFactoryForTesting(String username, String password, String url) {
-        Configuration cfg = new Configuration()
-                .setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect")
-                .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
-                .setProperty("hibernate.connection.username", username)
-                .setProperty("hibernate.connection.password", password)
-                .setProperty("hibernate.connection.url", url)
-                .setProperty("hibernate.hbm2ddl.auto", "validate")
-                .setProperty("show_sql", "true")
-                .addPackage("teammates.storage.sqlentity")
-                .addAnnotatedClass(Course.class)
-                .addAnnotatedClass(Instructor.class);
+    public static void setSessionFactoryForTesting(String username, String password, String url) {
+        Configuration cfg = getConfigForSessionFactory(username, password, url);
         sessionFactory = cfg.buildSessionFactory();
-
-        return sessionFactory;
     }
 }
