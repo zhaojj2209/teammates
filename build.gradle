@@ -73,7 +73,6 @@ dependencies {
     implementation("org.hibernate:hibernate-core:6.1.1.Final")
     implementation("org.postgresql:postgresql:42.4.0")
     implementation("org.flywaydb:flyway-core:9.2.2")
-    implementation("com.zaxxer:HikariCP:2.3.2")
 
     testAnnotationProcessor(testng)
 

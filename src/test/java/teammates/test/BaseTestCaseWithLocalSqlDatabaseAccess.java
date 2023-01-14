@@ -1,16 +1,11 @@
 package teammates.test;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import teammates.common.datatransfer.sqlattributes.CourseAttributes;
 import teammates.common.util.HibernateUtil;
 import teammates.logic.api.LogicNewExtension;
-
-import javax.sql.DataSource;
 
 public abstract class BaseTestCaseWithLocalSqlDatabaseAccess extends BaseTestCaseWithSqlDatabaseAccess {
     private final LogicNewExtension logic = new LogicNewExtension();
@@ -30,15 +25,6 @@ public abstract class BaseTestCaseWithLocalSqlDatabaseAccess extends BaseTestCas
     @AfterClass
     public static void closeContainer() {
         pgsql.close();
-    }
-
-    protected DataSource getDataSource(JdbcDatabaseContainer<?> container) {
-        HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(container.getJdbcUrl());
-        hikariConfig.setUsername(container.getUsername());
-        hikariConfig.setPassword(container.getPassword());
-        hikariConfig.setDriverClassName(container.getDriverClassName());
-        return new HikariDataSource(hikariConfig);
     }
 
     @Override
