@@ -8,6 +8,7 @@
             <package name="teammates.common.datatransfer.questions" />
             <package name="teammates.common.datatransfer" />
             <package name="teammates.common.util" />
+            <package name="teammates.storage.sql" />
             <package name="teammates.storage.api" />
             <package name="teammates.storage.search" />
             <package name="teammates.logic.api" />
