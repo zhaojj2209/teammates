@@ -35,8 +35,8 @@ public final class HibernateUtil {
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             Configuration cfg = getConfigForSessionFactory(
-                    Config.APP_LOCALPOSTGRES_DB,
-                    Config.APP_LOCALPOSTGRES_PASSWORD,
+                    Config.getDbUsername(),
+                    Config.getDbPassword(),
                     Config.getDbConnectionUrl()
             );
             sessionFactory = cfg.buildSessionFactory();
