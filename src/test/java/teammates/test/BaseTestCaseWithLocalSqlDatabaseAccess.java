@@ -1,5 +1,6 @@
 package teammates.test;
 
+import org.hibernate.Session;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -23,6 +24,9 @@ public abstract class BaseTestCaseWithLocalSqlDatabaseAccess extends BaseTestCas
         FlywayUtil.getFlywayInst(pgsql.getJdbcUrl(), pgsql.getUsername(), pgsql.getPassword()).migrate();
         HibernateUtil.setSessionFactoryForTesting(
                 pgsql.getUsername(), pgsql.getPassword(), pgsql.getJdbcUrl());
+
+        Session currentSession = HibernateUtil.getSessionFactory().getCurrentSession();
+        currentSession.beginTransaction();
     }
 
     @AfterClass
