@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import teammates.common.datatransfer.sqlattributes.EntityAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
@@ -70,17 +67,8 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
 
         E entity = convertToEntityForSaving(entityToAdd);
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            session.persist(entity);
-            tx.commit();
-            log.info("Entity created: " + JsonUtils.toJson(entityToAdd));
-        } catch (HibernateException e) {
-            // TODO: Handle errors
-            tx.rollback();
-        }
+        HibernateUtil.getSessionFactory().getCurrentSession().persist(entity);
+        log.info("Entity marked for insertion: " + JsonUtils.toJson(entityToAdd));
 
         return makeAttributes(entity);
     }
@@ -110,17 +98,8 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
     void saveEntity(E entityToSave) {
         assert entityToSave != null;
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            session.merge(entityToSave);
-            tx.commit();
-            log.info("Entity saved: " + JsonUtils.toJson(entityToSave));
-        } catch (HibernateException e) {
-            // TODO: Handle errors
-            tx.rollback();
-        }
+        HibernateUtil.getSessionFactory().getCurrentSession().merge(entityToSave);
+        log.info("Entity saved: " + JsonUtils.toJson(entityToSave));
     }
 
     /**
@@ -129,16 +108,7 @@ abstract class EntitiesDb<E extends BaseEntity, A extends EntityAttributes<E>> {
     void deleteEntity(E entityToDelete) {
         assert entityToDelete != null;
 
-        Transaction tx = null;
-
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-            session.remove(entityToDelete);
-            tx.commit();
-        } catch (HibernateException e) {
-            // TODO: Handle errors
-            tx.rollback();
-        }
+        HibernateUtil.getSessionFactory().getCurrentSession().remove(entityToDelete);
     }
 
     /**

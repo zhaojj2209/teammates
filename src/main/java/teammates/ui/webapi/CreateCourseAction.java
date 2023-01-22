@@ -9,6 +9,7 @@ import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
+import teammates.common.util.HibernateUtil;
 import teammates.ui.output.CourseData;
 import teammates.ui.request.CourseCreateRequest;
 import teammates.ui.request.InvalidHttpRequestBodyException;
@@ -83,12 +84,21 @@ class CreateCourseAction extends Action {
             logicNew.createCourseAndInstructor(userInfo.getId(), sqlCourseAttributes);
 
         } catch (EntityAlreadyExistsException e) {
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+
             throw new InvalidOperationException("The course ID " + courseAttributes.getId()
                     + " has been used by another course, possibly by some other user."
                     + " Please try again with a different course ID.", e);
         } catch (InvalidParametersException e) {
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+
             throw new InvalidHttpRequestBodyException(e);
         }
+
+        // Forces SQL statements to be executed to synchronize the JDBC connection's
+        // state with the state of objects held in memory, otherwise the
+        // creation timestamp of the newly created Course object will be null
+        HibernateUtil.getSessionFactory().getCurrentSession().flush();
 
         return new JsonResult(new CourseData(logicNew.getCourse(newCourseId)));
     }

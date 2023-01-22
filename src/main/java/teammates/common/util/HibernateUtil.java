@@ -27,6 +27,7 @@ public final class HibernateUtil {
                 .setProperty("hibernate.connection.url", url)
                 .setProperty("hibernate.hbm2ddl.auto", "validate")
                 .setProperty("show_sql", "true")
+                .setProperty("hibernate.current_session_context_class", "thread")
                 .addPackage("teammates.storage.sqlentity")
                 .addAnnotatedClass(Course.class)
                 .addAnnotatedClass(Instructor.class);
