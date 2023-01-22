@@ -31,6 +31,7 @@ public abstract class BaseTestCaseWithLocalSqlDatabaseAccess extends BaseTestCas
 
     @AfterClass
     public static void closeContainer() {
+        HibernateUtil.getSessionFactory().getCurrentSession().close();
         pgsql.close();
     }
 
