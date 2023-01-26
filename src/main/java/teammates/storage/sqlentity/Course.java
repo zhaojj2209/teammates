@@ -1,14 +1,18 @@
 package teammates.storage.sqlentity;
 
 import java.time.Instant;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 
 /**
  * Represents a course entity.
@@ -29,6 +33,9 @@ public class Course extends BaseEntity {
     @Column(name = "institute")
     private String institute;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "courseId")
+    private Set<FeedbackSession> feedbackSessions;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
@@ -44,11 +51,12 @@ public class Course extends BaseEntity {
         // recommended by Hibernate
     }
 
-    public Course(String courseId, String courseName, String courseTimeZone, String institute, Instant deletedAt) {
+    public Course(String courseId, String courseName, String courseTimeZone, String institute, Instant deletedAt, Set<FeedbackSession> feedbackSessions) {
         this.setUniqueId(courseId);
         this.setName(courseName);
         this.setTimeZone(courseTimeZone);
         this.setInstitute(institute);
+        this.setFeedbackSessions(feedbackSessions);
         if (deletedAt != null) {
             this.setDeletedAt(deletedAt);
         }
@@ -110,4 +118,13 @@ public class Course extends BaseEntity {
         this.deletedAt = deletedAt;
     }
 
+    public Set<FeedbackSession> getFeedbackSessions() {
+        return feedbackSessions;
+    }
+
+    public void setFeedbackSessions(Set<FeedbackSession> feedbackSessions) {
+        this.feedbackSessions = feedbackSessions;
+    }
+
+    
 }

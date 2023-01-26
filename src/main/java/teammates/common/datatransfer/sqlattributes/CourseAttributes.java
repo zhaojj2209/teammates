@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
 import teammates.common.util.Logger;
 import teammates.common.util.SanitizationHelper;
 import teammates.storage.sqlentity.Course;
+import teammates.storage.sqlentity.FeedbackSession;
 
 /**
  * The data transfer object for {@link Course} entities.
@@ -28,11 +32,13 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
     private String timeZone;
     private String id;
     private String institute;
+    private Set<FeedbackSession> feedbackSessions;
 
     private CourseAttributes(String courseId) {
         this.id = courseId;
         this.timeZone = Const.DEFAULT_TIME_ZONE;
         this.institute = Const.UNKNOWN_INSTITUTION;
+
         this.createdAt = null;
         this.updatedAt = null;
         this.deletedAt = null;
@@ -57,6 +63,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         }
         courseAttributes.timeZone = courseTimeZone;
         courseAttributes.institute = course.getInstitute();
+        courseAttributes.feedbackSessions = course.getFeedbackSessions();
 
         courseAttributes.createdAt = course.getCreatedAt();
         courseAttributes.updatedAt = course.getUpdatedAt();
@@ -124,6 +131,12 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
         return this.deletedAt != null;
     }
 
+    public List<FeedbackSessionAttributes> getFeedbackSessions() {
+        return this.feedbackSessions.stream()
+                .map(fs -> FeedbackSessionAttributes.valueOf(fs))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<String> getInvalidityInfo() {
 
@@ -140,7 +153,7 @@ public class CourseAttributes extends EntityAttributes<Course> implements Compar
 
     @Override
     public Course toEntity() {
-        return new Course(getId(), getName(), getTimeZone(), getInstitute(), deletedAt);
+        return new Course(getId(), getName(), getTimeZone(), getInstitute(), deletedAt, feedbackSessions);
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import teammates.storage.sqlentity.Course;
+import teammates.storage.sqlentity.FeedbackSession;
 import teammates.storage.sqlentity.Instructor;
 
 /**
@@ -30,7 +31,8 @@ public final class HibernateUtil {
                 .setProperty("hibernate.current_session_context_class", "thread")
                 .addPackage("teammates.storage.sqlentity")
                 .addAnnotatedClass(Course.class)
-                .addAnnotatedClass(Instructor.class);
+                .addAnnotatedClass(Instructor.class)
+                .addAnnotatedClass(FeedbackSession.class);
     }
 
     public static SessionFactory getSessionFactory() {

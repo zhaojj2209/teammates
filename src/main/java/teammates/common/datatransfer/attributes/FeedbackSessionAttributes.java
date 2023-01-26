@@ -69,6 +69,44 @@ public class FeedbackSessionAttributes extends EntityAttributes<FeedbackSession>
     /**
      * Gets the {@link FeedbackSessionAttributes} instance of the given {@link FeedbackSession}.
      */
+    public static FeedbackSessionAttributes valueOf(teammates.storage.sqlentity.FeedbackSession fs) {
+        FeedbackSessionAttributes feedbackSessionAttributes =
+                new FeedbackSessionAttributes(fs.getName(), fs.getCourseId());
+
+        feedbackSessionAttributes.creatorEmail = fs.getCreatorEmail();
+        if (fs.getInstructions() != null) {
+            feedbackSessionAttributes.instructions = fs.getInstructions();
+        }
+
+        // feedbackSessionAttributes.createdTime = fs.getCreatedTime();
+        // feedbackSessionAttributes.deletedTime = fs.getDeletedTime();
+        feedbackSessionAttributes.startTime = Instant.now();
+        feedbackSessionAttributes.endTime = Instant.now();
+        feedbackSessionAttributes.sessionVisibleFromTime = Instant.now();
+        feedbackSessionAttributes.resultsVisibleFromTime = Instant.now();
+        // feedbackSessionAttributes.timeZone = fs.getTimeZone();
+        // feedbackSessionAttributes.gracePeriod = Duration.ofMinutes(fs.getGracePeriod());
+        // feedbackSessionAttributes.sentOpeningSoonEmail = fs.isSentOpeningSoonEmail();
+        // feedbackSessionAttributes.sentOpenEmail = fs.isSentOpenEmail();
+        // feedbackSessionAttributes.sentClosingEmail = fs.isSentClosingEmail();
+        // feedbackSessionAttributes.sentClosedEmail = fs.isSentClosedEmail();
+        // feedbackSessionAttributes.sentPublishedEmail = fs.isSentPublishedEmail();
+        // feedbackSessionAttributes.isOpeningEmailEnabled = fs.isOpeningEmailEnabled();
+        // feedbackSessionAttributes.isClosingEmailEnabled = fs.isClosingEmailEnabled();
+        // feedbackSessionAttributes.isPublishedEmailEnabled = fs.isPublishedEmailEnabled();
+        // if (fs.getStudentDeadlines() != null) {
+        //     feedbackSessionAttributes.studentDeadlines = fs.getStudentDeadlines();
+        // }
+        // if (fs.getInstructorDeadlines() != null) {
+        //     feedbackSessionAttributes.instructorDeadlines = fs.getInstructorDeadlines();
+        // }
+
+        return feedbackSessionAttributes;
+    }
+
+    /**
+     * Gets the {@link FeedbackSessionAttributes} instance of the given {@link FeedbackSession}.
+     */
     public static FeedbackSessionAttributes valueOf(FeedbackSession fs) {
         FeedbackSessionAttributes feedbackSessionAttributes =
                 new FeedbackSessionAttributes(fs.getFeedbackSessionName(), fs.getCourseId());
