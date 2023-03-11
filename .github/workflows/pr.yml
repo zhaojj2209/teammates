@@ -26,7 +26,7 @@ jobs:
           if (isTitleValid && isDescriptionValid) {
             return
           }
-          let body = "Thank you for your PR! However, these parts of your pull request do not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n"
+          let body = `Hi @${pr.data.user.login}, thank you for your PR! However, these parts of your pull request do not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n`
           if (!isTitleValid) {
             body += "- Title must start with the issue number the PR is fixing, e.g. `[#<issue-number>]`\n"
           }
