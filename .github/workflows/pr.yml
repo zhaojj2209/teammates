@@ -21,4 +21,22 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number
           })
-          console.log(pr)
+          const isTitleValid = /^[#\\d] /.test(pr.data.title)
+          const isDescriptionValid = /(Fixes|Part of) #\\d/.test(pr.data.body)
+          if (isTitleValid && isDescriptionValid) {
+            return
+          }
+          let body = "Thank you for your PR! However, these parts of your pull request do not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n"
+          if (!isTitleValid) {
+            body += "- Title must start with the issue number the PR is fixing, e.g. `[#<issue-number>]`\n"
+          }
+          if (!isDescriptionValid) {
+            body += "- Description must reference the issue number the PR is fixing, e.g. `Fixes/Part of #<issue-number>`\n"
+          }
+          body += "Please address the above before we proceed to review your PR."
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body,
+          })
