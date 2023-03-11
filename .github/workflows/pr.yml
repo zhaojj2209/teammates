@@ -1,8 +1,9 @@
 name: Pull Request Checker
 on:
-  pull-request:
+  pull_request:
     types:
       - opened
+      - reopened
     branches:
       - master
       - pr-workflow
