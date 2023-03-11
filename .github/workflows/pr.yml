@@ -16,8 +16,9 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          const isTitleValid = /^[#\\d] /.test(${{ github.event.pull_request.title }})
-          const isDescriptionValid = /(Fixes|Part of) #\\d/.test(${{ github.event.pull_request.body }})
-          console.log(isTitleValid)
-          console.log(isDescriptionValid)
-          
+          const pr = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number
+          })
+          console.log(pr)
