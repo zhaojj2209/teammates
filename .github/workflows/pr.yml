@@ -1,0 +1,35 @@
+name: Pull Request Checker
+on:
+  pull-request:
+    types:
+      - opened
+    branches:
+      - master
+      - pr-workflow
+
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          const isTitleValid = /^[#\\d] /.test(github.event.pull_request.title)
+          const isDescriptionValid = /Fixes #\\d/.test(github.event.pull_request.body) || /Part of #\\d/.test(github.event.pull_request.body)
+          if (isTitleValid && isDescriptionValid) {
+            return
+          }
+          let body = "Thank you for your PR! However, these parts of your pull request do not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n"
+          if (!isTitleValid) {
+            body += "- Title must start with the issue number the PR is fixing, e.g. `[#<issue-number>]`\n"
+          }
+          if (!isDescriptionValid) {
+            body += "- Description must reference the issue number the PR is fixing, e.g. `Fixes/Part of #<issue-number>`\n"
+          }
+          body += "Please address the above before we proceed to review your PR."
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body,
+          })
