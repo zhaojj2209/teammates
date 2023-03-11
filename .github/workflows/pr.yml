@@ -26,14 +26,15 @@ jobs:
           if (isTitleValid && isDescriptionValid) {
             return
           }
-          let body = `Hi @${pr.data.user.login}, thank you for your PR! However, these parts of your pull request do not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n`
+          let body = `Hi @${pr.data.user.login}, thank you for your interest in contributing to TEAMMATES!
+            However, your PR does not appear to follow our [contribution guidelines](docs/CONTRIBUTING.md):\n\n`
           if (!isTitleValid) {
             body += "- Title must start with the issue number the PR is fixing, e.g. `[#<issue-number>]`\n"
           }
           if (!isDescriptionValid) {
             body += "- Description must reference the issue number the PR is fixing, e.g. `Fixes/Part of #<issue-number>`\n"
           }
-          body += "Please address the above before we proceed to review your PR."
+          body += "\nPlease address the above before we proceed to review your PR."
           await github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
