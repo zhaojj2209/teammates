@@ -15,8 +15,8 @@ jobs:
     - uses: actions/github-script@v6
       with:
         script: |
-          const isTitleValid = /^[#\\d] /.test(github.event.pull_request.title)
-          const isDescriptionValid = /Fixes #\\d/.test(github.event.pull_request.body) || /Part of #\\d/.test(github.event.pull_request.body)
+          const isTitleValid = /^[#\\d] /.test(${{ github.event.pull_request.title }})
+          const isDescriptionValid = /(Fixes|Part of) #\\d/.test(${{ github.event.pull_request.body }})
           if (isTitleValid && isDescriptionValid) {
             return
           }
