@@ -17,7 +17,7 @@
       <li class="dropdown-header">Common visibility options</li>
       <li class="dropdown-item" *ngFor="let visibilityOption of commonFeedbackVisibilitySettings"
           (click)="applyCommonVisibilitySettings(visibilityOption)">{{ visibilityOption.name }}</li>
-      <li class="dropdown-divider" *ngIf="isCustomFeedbackVisibilitySettingAllowed"></li>
+      <li class="dropdown-divider" *ngIf="isCustomFeedbackVisibilitySettingAllowed" aria-hidden="true"></li>
       <li class="dropdown-item" *ngIf="isCustomFeedbackVisibilitySettingAllowed" (click)="triggerCustomVisibilitySetting()">Custom visibility options...</li>
     </ul>
   </div>
