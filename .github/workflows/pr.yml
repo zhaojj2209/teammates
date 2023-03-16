@@ -1,12 +1,9 @@
 name: Pull Request Checker
-on: [pull_request_target]
+on: pull_request_target
 
 jobs:
   check-pr:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
     - uses: actions/github-script@v6
       with:
