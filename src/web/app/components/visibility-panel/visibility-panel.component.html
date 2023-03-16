@@ -36,7 +36,8 @@
           <input type="checkbox"
                  (click)="modifyVisibilityControl($event.target.checked, visibilityType, visibilityControl)"
                  [checked]="visibilityStateMachine.isVisible(visibilityType, visibilityControl)"
-                 [disabled]="!visibilityStateMachine.isCellEditable(visibilityType, visibilityControl) || !model.isEditable">
+                 [disabled]="!visibilityStateMachine.isCellEditable(visibilityType, visibilityControl) || !model.isEditable"
+                 [attr.aria-label]="getCheckboxAriaLabel(visibilityType, visibilityControl)">
         </td>
       </tr>
     </ng-container>
