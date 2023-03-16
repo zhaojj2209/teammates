@@ -4,8 +4,7 @@ on:
     types:
       - opened
       - reopened
-    branches:
-      - master
+      - synchronize
 
 jobs:
   check-pr:
