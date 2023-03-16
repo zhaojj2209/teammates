@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release
+      - fix-chrome-e2e
   schedule:
     - cron: "0 0 * * *" # end of every day
 jobs:
