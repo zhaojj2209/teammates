@@ -42,3 +42,4 @@ jobs:
             repo: context.repo.repo,
             body,
           })
+          core.setFailed(body)
