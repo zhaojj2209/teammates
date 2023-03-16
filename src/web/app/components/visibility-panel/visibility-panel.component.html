@@ -6,7 +6,7 @@
     </div>
     <b [ngClass]="{ 'visibility-title': !model.isQuestionHasResponses }">Visibility</b> (Who can see the responses?)
   </div>
-  <div ngbDropdown class="margin-top-15px">
+  <div #mainMenu="ngbDropdown" ngbDropdown class="margin-top-15px">
     <button id="btn-question-visibility" class="btn btn-light white-space-normal" ngbDropdownToggle [disabled]="!model.isEditable">
       <span *ngIf="!model.isUsingOtherVisibilitySetting">
         {{ model.commonVisibilitySettingName }}
