@@ -764,6 +764,7 @@ exports[`InstructorSessionEditPageComponent should snap with feedback session qu
                         id="submission-start-time"
                       >
                         <select
+                          aria-label="Select time"
                           class="form-control form-select ng-untouched ng-pristine ng-valid"
                         >
                           <option
@@ -946,6 +947,7 @@ exports[`InstructorSessionEditPageComponent should snap with feedback session qu
                         id="submission-end-time"
                       >
                         <select
+                          aria-label="Select time"
                           class="form-control form-select ng-untouched ng-pristine ng-valid"
                         >
                           <option
@@ -3302,6 +3304,7 @@ exports[`InstructorSessionEditPageComponent should snap with new question added 
                         id="submission-start-time"
                       >
                         <select
+                          aria-label="Select time"
                           class="form-control form-select ng-untouched ng-pristine ng-valid"
                         >
                           <option
@@ -3484,6 +3487,7 @@ exports[`InstructorSessionEditPageComponent should snap with new question added 
                         id="submission-end-time"
                       >
                         <select
+                          aria-label="Select time"
                           class="form-control form-select ng-untouched ng-pristine ng-valid"
                         >
                           <option
