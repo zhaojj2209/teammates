@@ -23,7 +23,7 @@ public final class AxeUtil {
      * 4. landmark-unique - disabled for instructor feedback edit page, likely also caused by TinyMCE.
      */
     public static final List<String> DISABLED_RULES = Arrays.asList(
-            "color-contrast", "empty-table-header", "landmark-complementary-is-top-level", "landmark-unique"
+            "empty-table-header", "landmark-complementary-is-top-level", "landmark-unique"
     );
 
     /**
